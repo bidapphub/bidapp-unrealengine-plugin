@@ -1049,7 +1049,6 @@ void ForwardEvent(const FString &Name, const FString &Body)
         }
         else if (Name == TEXT("RewardedDidLoadEvent"))
         {
-            UE_LOG(LogTemp, Warning, TEXT("@@@@@@@@@RewardedDidLoadEvent"));
             UBidapp::RewardedDidLoadDelegate.Broadcast(AdInfo);
             UBidappDelegate::BroadcastAdEvent(Name, AdInfo);
         }

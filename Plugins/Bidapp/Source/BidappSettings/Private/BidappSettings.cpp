@@ -68,11 +68,13 @@ FString ProjectName = FApp::GetProjectName();
 
 UBidappSettings* BidappSettings = GetMutableDefault<UBidappSettings>();
 
-FString AppIdValue;
+FString AdmobAppIdValue;
+FString AppLovinAppIdValue;
 
 if (BidappSettings)
 {
-    AppIdValue = BidappSettings->AppId;
+    AdmobAppIdValue = BidappSettings->AdmobAppId;
+    AppLovinAppIdValue = BidappSettings->AppLovinAppId;
 }
 else
 {
@@ -110,18 +112,25 @@ return;
     "   <addPermission android:name=\"android.permission.ACCESS_NETWORK_STATE\" />\n"
     ));
 
-    if (!AppIdValue.IsEmpty() && BidappSettings->bAdmob)
+    if (!AdmobAppIdValue.IsEmpty() && BidappSettings->bAdmob)
     {
         AARImportsString += "   <setElement result=\"AppName\" value=\"meta-data\"/>\n"
-	"	<addAttribute tag=\"AppName\" name=\"android:name\" value=\"com.google.android.gms.ads.APPLICATION_ID\"/>\n"
-	"	<addAttribute tag=\"AppName\" name=\"android:value\" value=\""+ AppIdValue +"\"/>\n"
+	"	<addAttribute tag=\"$AppName\" name=\"android:name\" value=\"com.google.android.gms.ads.APPLICATION_ID\"/>\n"
+	"	<addAttribute tag=\"$AppName\" name=\"android:value\" value=\""+ AdmobAppIdValue +"\"/>\n"
     "	<addElement tag=\"application\" name=\"AppName\"/>\n"; 
     }
-    else if (AppIdValue.IsEmpty() && BidappSettings->bAdmob){
+    else if (AdmobAppIdValue.IsEmpty() && BidappSettings->bAdmob){
     AARImportsString += "   <setElement result=\"AppName\" value=\"meta-data\"/>\n"
-	"	<addAttribute tag=\"AppName\" name=\"android:name\" value=\"com.google.android.gms.ads.APPLICATION_ID\"/>\n"
-	"	<addAttribute tag=\"AppName\" name=\"android:value\" value=\"ca-app-pub-3940256099942544~3347511713\"/>\n"
+	"	<addAttribute tag=\"$AppName\" name=\"android:name\" value=\"com.google.android.gms.ads.APPLICATION_ID\"/>\n"
+	"	<addAttribute tag=\"$AppName\" name=\"android:value\" value=\"ca-app-pub-3940256099942544~3347511713\"/>\n"
 	"	<addElement tag=\"application\" name=\"AppName\"/>\n"; 
+    }
+          if (!AppLovinAppIdValue.IsEmpty() && (BidappSettings->bApplovin || BidappSettings->bApplovinMax))
+    {
+        AARImportsString += "   <setElement result=\"AppName\" value=\"meta-data\"/>\n"
+	"	<addAttribute tag=\"$AppName\" name=\"android:name\" value=\"applovin.sdk.key\"/>\n"
+	"	<addAttribute tag=\"$AppName\" name=\"android:value\" value=\""+ AppLovinAppIdValue +"\"/>\n"
+    "	<addElement tag=\"application\" name=\"AppName\"/>\n"; 
     }
 
     AARImportsString += "   </true>\n"
@@ -175,11 +184,6 @@ if (BidappSettings->bUnity)
     AARImportsString += "      <insertNewline/>\n";
 }
 
-if (BidappSettings->bAdmob)
-{
-    AARImportsString += "      <insertValue value=\"io.bidapp.networks,admob,1.0.2\" />\n";
-    AARImportsString += "      <insertNewline/>\n";
-}
 
 if (BidappSettings->bChartboost)
 {
