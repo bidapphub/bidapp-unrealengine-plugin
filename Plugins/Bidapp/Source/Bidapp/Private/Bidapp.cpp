@@ -7,10 +7,438 @@
 
 #if PLATFORM_IOS
 #include "IOS/IOSAppDelegate.h"
+#include "iOS/BidappSDKPlugin.h"
+#import <Foundation/Foundation.h>
 
-THIRD_PARTY_INCLUDES_START
-#include <MAX_Unreal_Plugin/MAX_Unreal_Plugin.h>
-THIRD_PARTY_INCLUDES_END
+typedef void(*event_forwarder_t)(NSString*,NSString*);
+
+@interface BIDUnrealPlugin : NSObject
+{
+    NSString* bannerId;
+    NSString* mrecId;
+    BOOL logging;
+}
+
+-(void)createBannerWithPositionH:(NSString*)horizontalPosition V:(NSString*)verticalPosition;
+-(void)showBanner;
+-(void)hideBanner;
+-(void)destroyBanner;
+-(void)startAutorefreshBanner:(int32_t)interval;
+-(void)stopAutorefreshBanner;
+
+-(void)createMrecWithPositionH:(NSString*)horizontalPosition V:(NSString*)verticalPosition;
+-(void)showMrec;
+-(void)hideMrec;
+-(void)destroyMrec;
+-(void)startAutorefreshMrec:(int32_t)interval;
+-(void)stopAutorefreshMrec;
+
+-(void)createInterstitialWithAdUnitIdentifier:(NSString*)adUnitId;
+-(void)loadInterstitialWithAdUnitIdentifier:(NSString*)adUnitId;
+-(BOOL)isInterstitialReadyWithAdUnitIdentifier:(NSString*)adUnitId;
+-(void)showInterstitialWithAdUnitIdentifier:(NSString*)adUnitId;
+
+-(void)createRewardedWithAdUnitIdentifier:(NSString*)adUnitId;
+-(void)loadRewardedWithAdUnitIdentifier:(NSString*)adUnitId;
+-(BOOL)isRewardedAdReadyWithAdUnitIdentifier:(NSString*)adUnitId;
+-(void)showRewardedAdWithAdUnitIdentifier:(NSString*)adUnitId;
+
+-(void)initialize:(NSString*)pluginVersion sdkKey:(NSString*)sdkKey;
+-(BOOL)isInitialized;
+
+-(void)setHasUserConsent:(BOOL)consentGiven;
+-(void)setIsAgeRestrictedUser:(BOOL)ageRestricted;
+-(void)setDoNotSell:(BOOL)doNotSell;
+-(void)setVerboseLoggingEnabled:(BOOL)enabled;
+-(BOOL)isVerboseLoggingEnabled;
+-(void)setTestEnable;
+
+-(id)initWithView:(UIView*)mainView eventCallback:(event_forwarder_t)forwarder;
+
+@end
+
+static UIView* mainView;
+static event_forwarder_t forwarder = NULL;
+static NSMutableSet* interstitialsLoaded = nil;
+static NSMutableSet* rewardedsLoaded = nil;
+static BOOL initialized = NO;
+
+@implementation BIDUnrealPlugin
+
++(UIView*)view
+{
+    return mainView;
+}
+
++(void)onEventName:(NSString*)eventName
+                idt:(NSString*)idt
+        placementId:(NSString*)placementId
+        networkId:(NSString*)networkId
+        waterfallId:(NSString*)waterfallId
+            revenue:(NSNumber*)revenue
+        errorMessage:(NSString*)errorMessage
+{
+    if (nil == forwarder ||
+        nil == eventName ||
+        nil == idt)
+    {
+        return;
+    }
+    
+    if ([eventName isEqualToString:@"InterstitialDidLoadEvent"])
+    {
+        @synchronized(interstitialsLoaded)
+        {
+            [interstitialsLoaded addObject:idt];
+        }
+    }
+    else if ([eventName isEqualToString:@"RewardedDidLoadEvent"])
+    {
+        @synchronized(rewardedsLoaded)
+        {
+            [rewardedsLoaded addObject:idt];
+        }
+    }
+    else if ([eventName isEqualToString:@"SdkInitEvent"])
+    {
+        @synchronized(self)
+        {
+            initialized = YES;
+        }
+    }
+    
+    NSMutableDictionary* params = NSMutableDictionary.dictionary;
+    
+    params[@"idt"] = idt;
+    params[@"AdUnitPlacement"] = placementId;
+    params[@"NetworkId"] = networkId;
+    params[@"WaterfallId"] = waterfallId;
+    params[@"Revenue"] = revenue.stringValue;
+    params[@"Message"] = errorMessage;
+
+    if (!params.count)
+    {
+        return forwarder(eventName, @"{}");
+    }
+    
+    NSData* d = [NSJSONSerialization dataWithJSONObject:params options:0 error:nil];
+    if (!d)
+    {
+        return forwarder(eventName, @"{}");
+    }
+    
+    NSString* dString = [[NSString alloc]initWithData:d encoding:NSUTF8StringEncoding];
+    if (!dString)
+    {
+        return forwarder(eventName, @"{}");
+    }
+    
+    return forwarder(eventName, dString);
+}
+
+-(NSString*)adjustVerticalPosition:(NSString*)verticalPosition
+{
+    if ([verticalPosition isEqualToString:@"top"])
+    {
+        return @"0";
+    }
+    else if ([verticalPosition isEqualToString:@"center"])
+    {
+        return @"1";
+    }
+    
+    return @"2";
+}
+
+-(NSString*)adjustHorizontalPosition:(NSString*)horizontalPosition
+{
+    if ([horizontalPosition isEqualToString:@"left"])
+    {
+        return @"0";
+    }
+    else if ([horizontalPosition isEqualToString:@"right"])
+    {
+        return @"2";
+    }
+    
+    return @"1";
+}
+
+-(NSString*)adjustPositionH:(NSString*)h V:(NSString*)v
+{
+    return [@[[self adjustHorizontalPosition:h], [self adjustVerticalPosition:v]] componentsJoinedByString:@";"];
+}
+
+-(void)createBannerWithPositionH:(NSString*)horizontalPosition V:(NSString*)verticalPosition
+{
+    if (bannerId)
+    {
+        return;
+    }
+    
+    NSString* position = [self adjustPositionH:horizontalPosition V:verticalPosition];
+    Bidapp_createBannerAtPosition_platform("320", position.UTF8String, "320x50");
+    bannerId = @"320";
+}
+
+-(void)showBanner
+{
+    if (bannerId)
+    {
+        Bidapp_showBanner_platform(bannerId.UTF8String);
+    }
+}
+
+-(void)hideBanner
+{
+    if (bannerId)
+    {
+        Bidapp_hideBanner_platform(bannerId.UTF8String);
+    }
+}
+
+-(void)destroyBanner
+{
+    if (bannerId)
+    {
+        Bidapp_destroyBanner_platform(bannerId.UTF8String);
+        bannerId = nil;
+    }
+}
+
+-(void)startAutorefreshBanner:(int32_t)interval
+{
+    if (bannerId)
+    {
+        Bidapp_setBannerRefreshInterval_platform(bannerId.UTF8String, ((double)interval)/1000.0);
+    }
+}
+
+-(void)stopAutorefreshBanner
+{
+    if (bannerId)
+    {
+        Bidapp_setBannerRefreshInterval_platform(bannerId.UTF8String, 0.0);
+    }
+}
+
+-(void)createMrecWithPositionH:(NSString*)horizontalPosition V:(NSString*)verticalPosition
+{
+    if (mrecId)
+    {
+        return;
+    }
+    
+    NSString* position = [self adjustPositionH:horizontalPosition V:verticalPosition];
+    Bidapp_createBannerAtPosition_platform("300", position.UTF8String, "300x250");
+    mrecId = @"300";
+}
+
+-(void)showMrec
+{
+    if (mrecId)
+    {
+        Bidapp_showBanner_platform(mrecId.UTF8String);
+    }
+}
+
+-(void)hideMrec
+{
+    if (mrecId)
+    {
+        Bidapp_hideBanner_platform(mrecId.UTF8String);
+    }
+}
+
+-(void)destroyMrec
+{
+    if (mrecId)
+    {
+        Bidapp_destroyBanner_platform(mrecId.UTF8String);
+        mrecId = nil;
+    }
+}
+
+-(void)startAutorefreshMrec:(int32_t)interval
+{
+    if (mrecId)
+    {
+        Bidapp_setBannerRefreshInterval_platform(mrecId.UTF8String, ((double)interval)/1000.0);
+    }
+}
+
+-(void)stopAutorefreshMrec
+{
+    if (mrecId)
+    {
+        Bidapp_setBannerRefreshInterval_platform(mrecId.UTF8String, 0.0);
+    }
+}
+
+-(void)createInterstitialWithAdUnitIdentifier:(NSString*)adUnitId
+{
+    Bidapp_createInterstitial_platform(adUnitId.UTF8String,false);
+}
+
+-(void)loadInterstitialWithAdUnitIdentifier:(NSString*)adUnitId
+{
+    Bidapp_loadInterstitial_platform(adUnitId.UTF8String);
+}
+
+-(void)createRewardedWithAdUnitIdentifier:(NSString*)adUnitId
+{
+    Bidapp_createRewarded_platform(adUnitId.UTF8String,false);
+}
+
+-(void)loadRewardedWithAdUnitIdentifier:(NSString*)adUnitId
+{
+    Bidapp_loadRewarded_platform(adUnitId.UTF8String);
+}
+
+-(void)initialize:(NSString*)pluginVersion appIdValue:(NSString*)appIdValue
+{
+    NSString* formats = [@[BIDAPP_INTERSTITIAL, BIDAPP_REWARDED, BIDAPP_BANNER]componentsJoinedByString:@" "];
+    Bidapp_start_platform2(appIdValue.UTF8String, formats.UTF8String, pluginVersion.UTF8String);
+}
+
+-(BOOL)isInitialized
+{
+    @synchronized(self.class)
+    {
+        return initialized;
+    }
+}
+
+-(void)setHasUserConsent:(BOOL)consentGiven
+{
+    Bidapp_setGDPRConsent_platform(consentGiven);
+}
+
+-(void)setIsAgeRestrictedUser:(BOOL)ageRestricted
+{
+    Bidapp_setSubjectToCOPPA_platform(ageRestricted);
+}
+
+-(void)setDoNotSell:(BOOL)doNotSell
+{
+    Bidapp_setCCPAConsent_platform(!doNotSell);
+}
+
+-(void)setVerboseLoggingEnabled:(BOOL)enabled
+{
+    if (enabled)
+    {
+        Bidapp_setLogging_platform(enabled);
+        logging = YES;
+    }
+}
+
+-(BOOL)isVerboseLoggingEnabled
+{
+    return logging;
+}
+
+-(void)setTestEnable
+{
+    Bidapp_setTestMode_platform(true);
+}
+
+-(BOOL)isInterstitialReadyWithAdUnitIdentifier:(NSString*)adUnitId
+{
+    if (!adUnitId)
+    {
+        return NO;
+    }
+    
+    @synchronized(interstitialsLoaded)
+    {
+        return [interstitialsLoaded containsObject:adUnitId];
+    }
+}
+
+-(void)showInterstitialWithAdUnitIdentifier:(NSString*)adUnitId
+{
+    if (!adUnitId)
+    {
+        return;
+    }
+    
+    Bidapp_showInterstitial_platform(adUnitId.UTF8String);
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        
+        BOOL has = Bidapp_hasInterstitial(adUnitId.UTF8String);
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            
+            if (has)
+            {
+                [interstitialsLoaded addObject:adUnitId];
+            }
+            else
+            {
+                [interstitialsLoaded removeObject:adUnitId];
+            }
+        });
+    });
+}
+
+-(BOOL)isRewardedAdReadyWithAdUnitIdentifier:(NSString*)adUnitId
+{
+    if (!adUnitId)
+    {
+        return NO;
+    }
+    
+    @synchronized(rewardedsLoaded)
+    {
+        return [rewardedsLoaded containsObject:adUnitId];
+    }
+}
+
+-(void)showRewardedAdWithAdUnitIdentifier:(NSString*)adUnitId
+{
+    if (!adUnitId)
+    {
+        return;
+    }
+
+    Bidapp_showRewarded_platform(adUnitId.UTF8String);
+    dispatch_async(dispatch_get_main_queue(), ^{
+        
+        BOOL has = Bidapp_hasRewarded(adUnitId.UTF8String);
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            
+            if (has)
+            {
+                [rewardedsLoaded addObject:adUnitId];
+            }
+            else
+            {
+                [rewardedsLoaded removeObject:adUnitId];
+            }
+        });
+    });
+}
+
+-(id)initWithView:(UIView*)mainView_ eventCallback:(event_forwarder_t)forwarder_
+{
+    if (self = [super init])
+    {
+        mainView = mainView_;
+        forwarder = forwarder_;
+        interstitialsLoaded = [NSMutableSet set];
+        rewardedsLoaded = [NSMutableSet set];
+    }
+    
+    return self;
+}
+
+@end
+
+
+//THIRD_PARTY_INCLUDES_START
+//#include <bidapp/bidapp.h>
+//THIRD_PARTY_INCLUDES_END
 
 #elif PLATFORM_ANDROID
 #include "Android/AndroidJavaBidappUnrealPlugin.h"
@@ -95,7 +523,7 @@ void UBidapp::SetDoNotSell(bool bDoNotSell)
 void UBidapp::SetInterstitialEnable()
 {
 #if PLATFORM_IOS
-    [GetIOSPlugin() setInterstitialEnable];
+    //[GetIOSPlugin() setInterstitialEnable];
 #elif PLATFORM_ANDROID
     GetAndroidPlugin()->SetInterstitialEnable();
 #endif
@@ -104,7 +532,7 @@ void UBidapp::SetInterstitialEnable()
 void UBidapp::SetRewardedEnable()
 {
 #if PLATFORM_IOS
-    [GetIOSPlugin() setRewardedEnable];
+    //[GetIOSPlugin() setRewardedEnable];
 #elif PLATFORM_ANDROID
     GetAndroidPlugin()->SetRewardedEnable();
 #endif
@@ -113,18 +541,18 @@ void UBidapp::SetRewardedEnable()
 void UBidapp::SetBannerEnable()
 {
 #if PLATFORM_IOS
-    [GetIOSPlugin() SetBannerEnable];
+    //[GetIOSPlugin() SetBannerEnable];
 #elif PLATFORM_ANDROID
     GetAndroidPlugin()->SetBannerEnable();
 #endif
 }
 
-void UBidapp::SetVerboseLoggingEnabled()
+void UBidapp::SetVerboseLoggingEnabled(bool bEnabled)
 {
 #if PLATFORM_IOS
-    [GetIOSPlugin() setVerboseLoggingEnabled];
+    [GetIOSPlugin() setVerboseLoggingEnabled:bEnabled];
 #elif PLATFORM_ANDROID
-    GetAndroidPlugin()->SetVerboseLoggingEnabled();
+    GetAndroidPlugin()->SetVerboseLoggingEnabled(bEnabled);
 #endif
 }
 
@@ -159,7 +587,7 @@ void UBidapp::CreateBanner(BBannerVerticalPosition BannerVerticalPosition, BBann
 const FString BannerVerticalString = GetBannerVerticalString(BannerVerticalPosition);
 const FString BannerHorizontalString = GetBannerHorizontalString(BannerHorizontalPosition);
 #if PLATFORM_IOS
-    [GetIOSPlugin() createBannerWithAdUnitIdentifier];
+    [GetIOSPlugin() createBannerWithPositionH:BannerHorizontalString.GetNSString() V:BannerVerticalString.GetNSString()];
 #elif PLATFORM_ANDROID
     GetAndroidPlugin()->CreateBanner(BannerVerticalString, BannerHorizontalString);
 #endif
@@ -168,7 +596,7 @@ const FString BannerHorizontalString = GetBannerHorizontalString(BannerHorizonta
 void UBidapp::ShowBanner()
 {
 #if PLATFORM_IOS
-    [GetIOSPlugin() showBannerWithAdUnitIdentifier];
+    [GetIOSPlugin() showBanner];
 #elif PLATFORM_ANDROID
     GetAndroidPlugin()->ShowBanner();
 #endif
@@ -177,7 +605,7 @@ void UBidapp::ShowBanner()
 void UBidapp::HideBanner()
 {
 #if PLATFORM_IOS
-    [GetIOSPlugin() hideBannerWithAdUnitIdentifier];
+    [GetIOSPlugin() hideBanner];
 #elif PLATFORM_ANDROID
     GetAndroidPlugin()->HideBanner();
 #endif
@@ -186,7 +614,7 @@ void UBidapp::HideBanner()
 void UBidapp::DestroyBanner()
 {
 #if PLATFORM_IOS
-    [GetIOSPlugin() destroyBannerWithAdUnitIdentifier];
+    [GetIOSPlugin() destroyBanner];
 #elif PLATFORM_ANDROID
     GetAndroidPlugin()->DestroyBanner();
 #endif
@@ -195,7 +623,7 @@ void UBidapp::DestroyBanner()
 void UBidapp::StartAutorefreshBanner(int32 interval)
 {
 #if PLATFORM_IOS
-    [GetIOSPlugin() startAutorefreshBanner];
+    [GetIOSPlugin() startAutorefreshBanner:(int32_t)interval];
 #elif PLATFORM_ANDROID
     GetAndroidPlugin()->StartAutorefreshBanner(interval);
 #endif
@@ -217,7 +645,7 @@ void UBidapp::CreateMrec(BBannerVerticalPosition MrecVerticalPosition, BBannerHo
 const FString MRecVerticalString = GetBannerVerticalString(MrecVerticalPosition);
 const FString MRecHorizontalString = GetBannerHorizontalString(MrecHorizontalPosition);
 #if PLATFORM_IOS
-    [GetIOSPlugin() createMrecWithAdUnitIdentifier];
+    [GetIOSPlugin() createMrecWithPositionH:MRecHorizontalString.GetNSString() V:MRecVerticalString.GetNSString()];
 #elif PLATFORM_ANDROID
     GetAndroidPlugin()->CreateMrec(MRecVerticalString, MRecHorizontalString);
 #endif
@@ -226,7 +654,7 @@ const FString MRecHorizontalString = GetBannerHorizontalString(MrecHorizontalPos
 void UBidapp::ShowMrec()
 {
 #if PLATFORM_IOS
-    [GetIOSPlugin() showMrecWithAdUnitIdentifier];
+    [GetIOSPlugin() showMrec];
 #elif PLATFORM_ANDROID
     GetAndroidPlugin()->ShowMrec();
 #endif
@@ -235,7 +663,7 @@ void UBidapp::ShowMrec()
 void UBidapp::HideMrec()
 {
 #if PLATFORM_IOS
-    [GetIOSPlugin() hideMrecWithAdUnitIdentifier];
+    [GetIOSPlugin() hideMrec];
 #elif PLATFORM_ANDROID
     GetAndroidPlugin()->HideBanner();
 #endif
@@ -244,7 +672,7 @@ void UBidapp::HideMrec()
 void UBidapp::DestroyMrec()
 {
 #if PLATFORM_IOS
-    [GetIOSPlugin() destroyMrecWithAdUnitIdentifier];
+    [GetIOSPlugin() destroyMrec];
 #elif PLATFORM_ANDROID
     GetAndroidPlugin()->DestroyMrec();
 #endif
@@ -253,7 +681,7 @@ void UBidapp::DestroyMrec()
 void UBidapp::StartAutorefreshMrec(int32 interval)
 {
 #if PLATFORM_IOS
-    [GetIOSPlugin() startAutorefreshMrec];
+    [GetIOSPlugin() startAutorefreshMrec:(int32_t)interval];
 #elif PLATFORM_ANDROID
     GetAndroidPlugin()->StartAutorefreshMrec(interval);
 #endif
@@ -274,7 +702,7 @@ void UBidapp::StopAutorefreshMrec()
 void UBidapp::CreateInterstitial(bool autoCaching)
 {
 #if PLATFORM_IOS
-    [GetIOSPlugin() CreateInterstitialWithAdUnitIdentifier];
+    [GetIOSPlugin() createInterstitialWithAdUnitIdentifier:@"111"];
 #elif PLATFORM_ANDROID
     GetAndroidPlugin()->CreateInterstitial(autoCaching);
 #endif
@@ -283,7 +711,7 @@ void UBidapp::CreateInterstitial(bool autoCaching)
 void UBidapp::LoadInterstitial()
 {
 #if PLATFORM_IOS
-    [GetIOSPlugin() loadInterstitialWithAdUnitIdentifier];
+    [GetIOSPlugin() loadInterstitialWithAdUnitIdentifier:@"111"];
 #elif PLATFORM_ANDROID
     GetAndroidPlugin()->LoadInterstitial();
 #endif
@@ -292,7 +720,7 @@ void UBidapp::LoadInterstitial()
 bool UBidapp::IsInterstitialReady()
 {
 #if PLATFORM_IOS
-    return [GetIOSPlugin() isInterstitialReadyWithAdUnitIdentifier];
+    return [GetIOSPlugin() isInterstitialReadyWithAdUnitIdentifier:@"111"];
 #elif PLATFORM_ANDROID
     return GetAndroidPlugin()->IsInterstitialReady();
 #else
@@ -304,7 +732,7 @@ bool UBidapp::IsInterstitialReady()
 void UBidapp::ShowInterstitial()
 {
 #if PLATFORM_IOS
-    [GetIOSPlugin() showInterstitialWithAdUnitIdentifier];
+    [GetIOSPlugin() showInterstitialWithAdUnitIdentifier:@"111"];
 #elif PLATFORM_ANDROID
     GetAndroidPlugin()->ShowInterstitial();
 #endif
@@ -313,7 +741,7 @@ void UBidapp::ShowInterstitial()
 void UBidapp::CreateRewarded(bool autoCaching)
 {
 #if PLATFORM_IOS
-    [GetIOSPlugin() CreateRewardedWithAdUnitIdentifier];
+    [GetIOSPlugin() createRewardedWithAdUnitIdentifier:@"888"];
 #elif PLATFORM_ANDROID
      GetAndroidPlugin()->CreateRewarded(autoCaching);
 #endif
@@ -322,7 +750,7 @@ void UBidapp::CreateRewarded(bool autoCaching)
 void UBidapp::LoadRewarded()
 {
 #if PLATFORM_IOS
-    [GetIOSPlugin() loadRewardedWithAdUnitIdentifier];
+    [GetIOSPlugin() loadRewardedWithAdUnitIdentifier:@"888"];
 #elif PLATFORM_ANDROID
     GetAndroidPlugin()->LoadRewarded();
 #endif
@@ -331,7 +759,7 @@ void UBidapp::LoadRewarded()
 bool UBidapp::IsRewardedReady()
 {
 #if PLATFORM_IOS
-    return [GetIOSPlugin() isRewardedAdReadyWithAdUnitIdentifier];
+    return [GetIOSPlugin() isRewardedAdReadyWithAdUnitIdentifier:@"888"];
 #elif PLATFORM_ANDROID
     return GetAndroidPlugin()->IsRewardedReady();
 #else
@@ -344,7 +772,7 @@ bool UBidapp::IsRewardedReady()
 void UBidapp::ShowRewarded()
 {
 #if PLATFORM_IOS
-    [GetIOSPlugin() showRewardedAdWithAdUnitIdentifier];
+    [GetIOSPlugin() showRewardedAdWithAdUnitIdentifier:@"888"];
 #elif PLATFORM_ANDROID
     GetAndroidPlugin()->ShowRewarded();
 #endif
@@ -601,13 +1029,13 @@ extern "C" void ForwardIOSEvent(NSString *Name, NSString *Params)
     ForwardEvent((FString(NameCString)), FString(ParamsCString));
 }
 
-MAUnrealPlugin *UBidapp::GetIOSPlugin()
+BIDUnrealPlugin *UBidapp::GetIOSPlugin()
 {
-    static MAUnrealPlugin *PluginInstance = nil;
+    static BIDUnrealPlugin *PluginInstance = nil;
     static dispatch_once_t OnceToken;
     dispatch_once(&OnceToken, ^{
         UIView *MainView = (UIView *)[IOSAppDelegate GetDelegate].IOSView;
-        PluginInstance = [[MAUnrealPlugin alloc] initWithView:MainView eventCallback:&ForwardIOSEvent];
+        PluginInstance = [[BIDUnrealPlugin alloc] initWithView:MainView eventCallback:&ForwardIOSEvent];
     });
     return PluginInstance;
 }
