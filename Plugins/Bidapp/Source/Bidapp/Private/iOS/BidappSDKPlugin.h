@@ -1,3 +1,5 @@
+#include "BidappSDKPluginDefs.h"
+
 #ifndef BidappSDKPlugin_h
 #define BidappSDKPlugin_h
 
@@ -30,7 +32,7 @@ extern "C"
     void Bidapp_showInterstitial_platform(const char* idt);
     void Bidapp_showRewarded_platform(const char* idt);
 
-    const char* Bidapp_showBanner_platform(const char* bannerSize, float x, float y, float width, float height);
+    const char* Bidapp_showBannerX_platform(const char* bannerSize, float x, float y, float width, float height);
     void Bidapp_createBannerAtPosition_platform(const char* idt, const char* position, const char* bannerSize);
     void Bidapp_showBanner_platform(const char* bannerId);
     void Bidapp_hideBanner_platform(const char* bannerId);

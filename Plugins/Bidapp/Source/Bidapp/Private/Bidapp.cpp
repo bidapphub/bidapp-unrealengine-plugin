@@ -43,7 +43,7 @@ typedef void(*event_forwarder_t)(NSString*,NSString*);
 -(BOOL)isRewardedAdReadyWithAdUnitIdentifier:(NSString*)adUnitId;
 -(void)showRewardedAdWithAdUnitIdentifier:(NSString*)adUnitId;
 
--(void)initialize:(NSString*)pluginVersion sdkKey:(NSString*)sdkKey;
+-(void)initialize:(NSString*)pluginVersion pubIdValue:(NSString*)pubIdValue;
 -(BOOL)isInitialized;
 
 -(void)setHasUserConsent:(BOOL)consentGiven;
@@ -301,10 +301,10 @@ typedef BOOL(^adapter_filter_t)(int networkAdapterId);
     Bidapp_loadRewarded_platform(adUnitId.UTF8String);
 }
 
--(void)initialize:(NSString*)pluginVersion appIdValue:(NSString*)appIdValue
+-(void)initialize:(NSString*)pluginVersion pubIdValue:(NSString*)pubIdValue
 {
     NSString* formats = [@[BIDAPP_INTERSTITIAL, BIDAPP_REWARDED, BIDAPP_BANNER]componentsJoinedByString:@" "];
-    Bidapp_start_platform2(appIdValue.UTF8String, formats.UTF8String, pluginVersion.UTF8String);
+    Bidapp_start_platform2(pubIdValue.UTF8String, formats.UTF8String, pluginVersion.UTF8String);
 }
 
 -(BOOL)isInitialized
@@ -442,9 +442,9 @@ typedef BOOL(^adapter_filter_t)(int networkAdapterId);
 @end
 
 
-//THIRD_PARTY_INCLUDES_START
-//#include <bidapp/bidapp.h>
-//THIRD_PARTY_INCLUDES_END
+THIRD_PARTY_INCLUDES_START
+#include <bidapp/bidapp.h>
+THIRD_PARTY_INCLUDES_END
 
 #elif PLATFORM_ANDROID
 #include "Android/AndroidJavaBidappUnrealPlugin.h"
@@ -499,7 +499,77 @@ GConfig->GetBool(
     bEnableRewardAdFormatValue,
     GEngineIni
 );
+    
+    bool bLiftoff = false;
+    GConfig->GetBool(
+        TEXT("/Script/BidappSettings.BidappSettings"),
+        TEXT("bLiftoff"),
+        bLiftoff,
+        GEngineIni
+    );
 
+    bool bApplovin = false;
+    GConfig->GetBool(
+        TEXT("/Script/BidappSettings.BidappSettings"),
+        TEXT("bApplovin"),
+        bApplovin,
+        GEngineIni
+    );
+
+    bool bApplovinMax = false;
+    GConfig->GetBool(
+        TEXT("/Script/BidappSettings.BidappSettings"),
+        TEXT("bApplovinMax"),
+        bApplovinMax,
+        GEngineIni
+    );
+
+    bool bUnity = false;
+    GConfig->GetBool(
+        TEXT("/Script/BidappSettings.BidappSettings"),
+        TEXT("bUnity"),
+        bUnity,
+        GEngineIni
+    );
+
+    bool bAdmob = false;
+    GConfig->GetBool(
+        TEXT("/Script/BidappSettings.BidappSettings"),
+        TEXT("bAdmob"),
+       bAdmob,
+        GEngineIni
+    );
+
+    bool bChartboost = false;
+    GConfig->GetBool(
+        TEXT("/Script/BidappSettings.BidappSettings"),
+        TEXT("bChartboost"),
+       bChartboost,
+        GEngineIni
+    );
+
+    bool bFacebook = false;
+    GConfig->GetBool(
+        TEXT("/Script/BidappSettings.BidappSettings"),
+        TEXT("bFacebook"),
+       bChartboost,
+        GEngineIni
+    );
+    
+#if PLATFORM_IOS
+    [(id)NSClassFromString(@"BIDNetworks") setFilter:^BOOL(int networkAdapterId) {
+                           return NO
+                           || (bApplovin && networkAdapterId == BIDNetworkId_Applovin)
+                           || (bApplovinMax && networkAdapterId == BIDNetworkId_ApplovinMax)
+                           || (bUnity && networkAdapterId == BIDNetworkId_Unity)
+                           || (bLiftoff && networkAdapterId == BIDNetworkId_Liftoff)
+                           || (bChartboost && networkAdapterId == BIDNetworkId_Chartboost)
+                           || (bAdmob && networkAdapterId == BIDNetworkId_Admob)
+                           || (bFacebook && networkAdapterId == BIDNetworkId_Facebook)
+                           ;
+    }];
+#endif
+                           
 if (bSettingSuccess)
 {
     UE_LOG(LogTemp, Error, TEXT("Bidapp settings read success"));
@@ -608,8 +678,10 @@ void UBidapp::SetBannerEnable()
 #endif
 }
 
-void UBidapp::SetVerboseLoggingEnabled(bool bEnabled)
+void UBidapp::SetVerboseLoggingEnabled()
 {
+    bool bEnabled = true;
+    
 #if PLATFORM_IOS
     [GetIOSPlugin() setVerboseLoggingEnabled:bEnabled];
 #elif PLATFORM_ANDROID

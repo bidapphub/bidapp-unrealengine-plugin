@@ -1,3 +1,8 @@
+#include "BidappSDKPlugin.h"
+#include "CoreMinimal.h"
+
+#if PLATFORM_IOS
+
 #import <UIKit/UIKit.h>
 #import <Bidapp/BIDAdInfo.h>
 
@@ -59,9 +64,6 @@ void UnrealPause_bidapp(int pause)
     
     [i pause:pause];
 }
-
-#include "BidappSDKPluginDefs.h"
-#include "BidappSDKPlugin.h"
 
 #include <bidapp/BidappAds.h>
 #include <Bidapp/BIDInterstitial.h>
@@ -659,7 +661,7 @@ void Bidapp_showRewarded_platform(const char* idt)
     });
 }
 
-void Bidapp_showBanner_platform_(NSString* idt, NSString* bannerSize, float x, float y, float width, float height)
+void Bidapp_showBannerX_platform_(NSString* idt, NSString* bannerSize, float x, float y, float width, float height)
 {
     BIDBannerView *banner_view = nil;
     if ([bannerSize isEqualToString:@"300x250"]) {
@@ -688,7 +690,7 @@ void Bidapp_showBanner_platform_(NSString* idt, NSString* bannerSize, float x, f
     [BIDAPP_PLUGIN_VIEW_SOURCE addSubview:banner_view];
 }
 
-const char* Bidapp_showBanner_platform(const char* bannerSize, float x, float y, float width, float height)
+const char* Bidapp_showBannerX_platform(const char* bannerSize, float x, float y, float width, float height)
 {
     NSString* bannerSize_ = ToNSString(bannerSize);
     
@@ -697,7 +699,7 @@ const char* Bidapp_showBanner_platform(const char* bannerSize, float x, float y,
 
     dispatch_async(dispatch_get_main_queue(), ^{
         
-        Bidapp_showBanner_platform_(identifier,bannerSize_,x,y,width,height);
+        Bidapp_showBannerX_platform_(identifier,bannerSize_,x,y,width,height);
     });
     
     return FromNSString(identifier);
@@ -763,7 +765,7 @@ void Bidapp_createBannerAtPosition_platform_(NSString* idt, NSString* position, 
     {
         return;
     }
-    
+
     [banner_view stopAutorefresh];
     
     if (!banners)
@@ -981,3 +983,4 @@ const char* Bidapp_getParameterValue_platform(const char* parameterName, const c
     return FromNSString(@"");
 }
 
+#endif
