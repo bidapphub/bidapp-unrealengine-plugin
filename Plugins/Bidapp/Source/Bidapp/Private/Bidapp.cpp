@@ -65,6 +65,12 @@ static BOOL initialized = NO;
 
 @implementation BIDUnrealPlugin
 
+typedef BOOL(^adapter_filter_t)(int networkAdapterId);
+//To silence compiler. Method of BIDNetworks
++(void)setFilter:(adapter_filter_t)filter_
+{
+}
+
 +(UIView*)view
 {
     return mainView;
