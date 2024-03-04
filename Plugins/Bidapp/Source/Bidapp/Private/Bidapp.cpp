@@ -22,30 +22,85 @@ THIRD_PARTY_INCLUDES_END
 
 void UBidapp::Initialize()
 {
-    FString AppIdValue = "00000000-0000-0000-0000-000000000000";
-    bool bAdmobValue = false;
-    if (GConfig->GetBool(TEXT("/Script/BidappSettings.BidappSettings"), TEXT("bIncludeAdmobDependency"), bAdmobValue, GEngineIni))
-    {
-        UE_LOG(LogTemp, Warning, TEXT("Значение bAdmob из файла конфигурации: %d"), bAdmobValue);
-    }
-    else
-    {
-         UE_LOG(LogTemp, Error, TEXT("Не удалось считать настройку bAdmob из файла конфигурации"));
-    }
+FString PubIdValue = "00000000-0000-0000-0000-000000000000";
+bool bSettingSuccess = GConfig->GetString(TEXT("/Script/BidappSettings.BidappSettings"), TEXT("PubId"), PubIdValue, GEngineIni);
 
-            SetVerboseLoggingEnabled();   
-            SetRewardedEnable();
-            SetInterstitialEnable();
-            SetBannerEnable();
+    
+bool bEnableTestModeValue = false;
+GConfig->GetBool(
+    TEXT("/Script/BidappSettings.BidappSettings"),
+    TEXT("bEnableTestMode"),
+    bEnableTestModeValue,
+    GEngineIni
+);
+
+bool bEnableLoggingValue = false;
+GConfig->GetBool(
+    TEXT("/Script/BidappSettings.BidappSettings"),
+    TEXT("bEnableLogging"),
+    bEnableLoggingValue,
+    GEngineIni
+);
+
+bool bEnableBannerAdFormatValue = false;
+GConfig->GetBool(
+    TEXT("/Script/BidappSettings.BidappSettings"),
+    TEXT("bEnableBannerAdFormat"),
+    bEnableBannerAdFormatValue,
+    GEngineIni
+);
+
+bool bEnableInterstitialAdFormatValue = false;
+GConfig->GetBool(
+    TEXT("/Script/BidappSettings.BidappSettings"),
+    TEXT("bEnableInterstitialAdFormat"),
+    bEnableInterstitialAdFormatValue,
+    GEngineIni
+);
+
+bool bEnableRewardAdFormatValue = false;
+GConfig->GetBool(
+    TEXT("/Script/BidappSettings.BidappSettings"),
+    TEXT("bEnableRewardAdFormat"),
+    bEnableRewardAdFormatValue,
+    GEngineIni
+);
+
+if (bSettingSuccess)
+{
+    UE_LOG(LogTemp, Error, TEXT("Bidapp settings read success"));
+    if(bEnableTestModeValue){
+        SetTestEnable();
+    }
+    if (bEnableLoggingValue){
+        SetVerboseLoggingEnabled();
+    }
+    if (bEnableBannerAdFormatValue){
+        SetBannerEnable(); 
+    }
+    if (bEnableInterstitialAdFormatValue){
+        SetInterstitialEnable();
+    }
+    if (bEnableRewardAdFormatValue){
+        SetRewardedEnable();
+    }
+}
+else
+{
+    UE_LOG(LogTemp, Error, TEXT("Bidapp settings read failure"));
+    SetVerboseLoggingEnabled();   
+    SetRewardedEnable();
+    SetInterstitialEnable();
+    SetBannerEnable();       
+}
         
-
     TSharedPtr<IPlugin> Plugin = IPluginManager::Get().FindPlugin("Bidapp");
     FString PluginVersion = Plugin->GetDescriptor().VersionName;
 
 #if PLATFORM_IOS
-    [GetIOSPlugin() initialize:PluginVersion.GetNSString() appIdValue:AppIdValue.GetNSString()];
+    [GetIOSPlugin() initialize:PluginVersion.GetNSString() pubIdValue:PubIdValue.GetNSString()];
 #elif PLATFORM_ANDROID
-    GetAndroidPlugin()->Initialize(PluginVersion, AppIdValue);
+    GetAndroidPlugin()->Initialize(PluginVersion, PubIdValue);
 #endif
 }
 

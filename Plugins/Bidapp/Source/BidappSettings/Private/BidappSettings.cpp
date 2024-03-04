@@ -38,25 +38,28 @@ void FBidappSettings::ShutdownModule()
     }
 }
 
+void UBidappSettings::PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent)
+{
+    Super::PostEditChangeProperty(PropertyChangedEvent);
+    SaveConfig(CPF_Config, *GetDefaultConfigFilename());
+}
 
 void FBidappSettings::SetupAARImports()
 {
 FString PluginBaseDir;
-FString MarketplacePluginDir = FPaths::ConvertRelativePathToFull(FPaths::EnginePluginsDir()) / TEXT("Marketplace") / TEXT("Bidapp");
+FString MarketplacePluginDir = FPaths::ConvertRelativePathToFull(FPaths::EnginePluginsDir()) / TEXT("Marketplace") / TEXT("Bidapp") / TEXT("Source") / TEXT("Bidapp");
 if (FPaths::DirectoryExists(MarketplacePluginDir))
 {
     PluginBaseDir = MarketplacePluginDir;
 }
 else
 {
-    FString ProjectPluginDir = FPaths::ConvertRelativePathToFull(FPaths::ProjectPluginsDir()) / TEXT("Bidapp");
+    FString ProjectPluginDir = FPaths::ConvertRelativePathToFull(FPaths::ProjectPluginsDir()) / TEXT("Bidapp") / TEXT("Source") / TEXT("Bidapp");
     if (FPaths::DirectoryExists(ProjectPluginDir))
     {
         PluginBaseDir = ProjectPluginDir;
     }
-}
-
- 
+} 
 FString FileName = TEXT("Bidapp_UPL_Android.xml");
 
 FString FilePath = FPaths::Combine(PluginBaseDir, FileName);

@@ -27,15 +27,7 @@
       <true>
    <addPermission android:name="android.permission.INTERNET" />
    <addPermission android:name="android.permission.ACCESS_NETWORK_STATE" />
-   <setElement result="BidappDemo" value="meta-data"/>
-	<addAttribute tag="$BidappDemo" name="android:name" value="com.google.android.gms.ads.APPLICATION_ID"/>
-	<addAttribute tag="$BidappDemo" name="android:value" value="ca-app-pub-3940256099942544~3347511713"/>
-	<addElement tag="application" name="BidappDemo"/>
-           <provider
-           android:name="com.startapp.sdk.adsbase.StartAppInitProvider"
-           android:authorities="${applicationId}.startappinitprovider"
-            tools:node="remove" />
-      </true>
+   </true>
     </if>
   </androidManifestUpdates>
 
@@ -60,22 +52,8 @@
         <insertNewline/>
         <insertValue value="org.jetbrains.kotlinx,kotlinx-coroutines-android,1.7.3" />
         <insertNewline/>
-        <insertValue value="io.bidapp.networks,liftoff,1.0.2" />
-        <insertNewline/>
-        <insertValue value="io.bidapp.networks,applovin,1.0.2" />
-        <insertNewline/>
-        <insertValue value="io.bidapp.networks,applovinmax,1.0.2" />
-        <insertNewline/>
-        <insertValue value="io.bidapp.networks,unity,1.0.2" />
-        <insertNewline/>
-        <insertValue value="io.bidapp.networks,chartboost,1.0.2" />
-        <insertNewline/>
-        <insertValue value="io.bidapp.networks,digitalturbine,1.0.2" />
-        <insertNewline/>
-        <insertValue value="io.bidapp.networks,facebook,1.0.2" />
-        <insertNewline/>
-        <insertValue value="io.bidapp.networks,yandex,1.0.2" />
-        <insertNewline/>
+      <insertValue value="io.bidapp.networks,unity,1.0.2" />
+      <insertNewline/>
 <insertValue value="repository $S(PluginDir)/../ThirdParty/Android/repository" />
         <insertNewline/>
         <insertValue value="io.bidapp,bidapp-unreal-plugin,release" />
@@ -106,11 +84,7 @@
          
           // Prefer newer versions of Play Services, particularly for below UE 5.2
           dependencies {
-            implementation('io.bidapp.networks:admob:1.0.2') {
-              exclude group: 'com.google.android.gms', module: 'play-services-ads'
-            }
-            implementation('com.google.android.gms:play-services-ads:22.3.0') 
-            implementation("com.google.android.gms:play-services-auth").version {
+      implementation("com.google.android.gms:play-services-auth").version {
               strictly("[16,19[")
               prefer("16.0.1")
             }

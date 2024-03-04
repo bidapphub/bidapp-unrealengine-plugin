@@ -66,7 +66,6 @@ public:
     UPROPERTY(config, EditAnywhere, Category = "Admob Application Id")
     FString AppId;
 
-
     UBidappSettings()
         : PubId(TEXT("")), bEnableTestMode(false), bEnableLogging(true), bEnableBannerAdFormat(true), 
           bEnableInterstitialAdFormat(true), bEnableRewardAdFormat(true),
@@ -77,6 +76,8 @@ public:
           bYandex(true), AppId(TEXT(""))
     {
     }
+
+    virtual void PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent) override;
 };
 
 
