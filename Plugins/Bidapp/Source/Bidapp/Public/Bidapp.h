@@ -10,7 +10,7 @@
 
 // Forward declarations for plugin classes
 #if PLATFORM_IOS
-@class MAUnrealPlugin;
+@class BIDUnrealPlugin;
 #elif PLATFORM_ANDROID
 class FJavaAndroidBidappUnrealPlugin;
 #endif
@@ -212,7 +212,7 @@ public:
     static NSString *GetNSString(const FString &String);
     static NSArray<NSString *> *GetNSArray(const TArray<FString> &Array);
     static NSDictionary<NSString *, NSString *> *GetNSDictionary(const TMap<FString, FString> &Map);
-    static MAUnrealPlugin *GetIOSPlugin();
+    static BIDUnrealPlugin *GetIOSPlugin();
 #elif PLATFORM_ANDROID
     static TSharedPtr<FJavaAndroidBidappUnrealPlugin> GetAndroidPlugin();
 #endif

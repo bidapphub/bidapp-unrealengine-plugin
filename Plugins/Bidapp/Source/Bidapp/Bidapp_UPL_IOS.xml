@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Bidapp plugin additions -->
+<root>
+  <init>
+    <log text="Bidapp IOS SDK init"/>
+  </init>
+
+  <iosPListUpdates>
+    <addElements tag="dict" once="true">
+      <!-- Add any updates to Info.plist here -->
+    </addElements>
+  </iosPListUpdates>
+</root>
