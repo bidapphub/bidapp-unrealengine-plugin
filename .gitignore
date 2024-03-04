@@ -1,0 +1,25 @@
+# Игнорировать содержимое и сами папки Binaries
+Binaries/
+
+# Игнорировать содержимое и сами папки Build
+Build/
+
+# Игнорировать содержимое и сами папки DerivedDataCache
+DerivedDataCache/
+
+# Игнорировать содержимое и сами папки Intermediate
+Intermediate/
+
+# Игнорировать содержимое и сами папки Saved
+Saved/
+
+# Игнорировать содержимое и сами папки .vs, если используется Visual Studio
+.vs/
+
+# Игнорировать файлы проекта
+*.sln
+*.vcxproj
+*.opensdf
+*.sdf
+*.log
+
