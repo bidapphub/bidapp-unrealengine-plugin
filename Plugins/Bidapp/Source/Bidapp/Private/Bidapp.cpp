@@ -685,7 +685,7 @@ void UBidapp::SetVerboseLoggingEnabled()
 #if PLATFORM_IOS
     [GetIOSPlugin() setVerboseLoggingEnabled:bEnabled];
 #elif PLATFORM_ANDROID
-    GetAndroidPlugin()->SetVerboseLoggingEnabled(bEnabled);
+    GetAndroidPlugin()->SetVerboseLoggingEnabled();
 #endif
 }
 
