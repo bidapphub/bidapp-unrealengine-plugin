@@ -331,9 +331,9 @@ public class Bidapp : ModuleRules
     
 	private void InstallAndroid()
 	{
-		var AppLovinAndroidPath = Path.Combine( ModuleDirectory, "..", "ThirdParty", "Android", "repository", "io", "bidapp", "bidapp-unreal-plugin", "release" );
-		var AppLovinPluginPath = Path.Combine( AppLovinAndroidPath, "bidapp-unreal-plugin-release.aar" );
-		if ( !File.Exists( AppLovinPluginPath ) )
+		var BidappAndroidPath = Path.Combine( ModuleDirectory, "..", "ThirdParty", "Android", "repository", "io", "bidapp", "bidapp-unreal-plugin", "release" );
+		var BidappPluginPath = Path.Combine( BidappAndroidPath, "bidapp-unreal-plugin-release.aar" );
+		if ( !File.Exists( BidappPluginPath ) )
 		{
 			System.Console.WriteLine( "Bidapp Android Plugin not found" );
 			PublicDefinitions.Add( "WITH_Bidapp=0" );

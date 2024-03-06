@@ -1,6 +1,5 @@
 #include "Bidapp.h"
 #include "BidappDelegate.h"
-#include "BidappLogger.h"
 #include "Interfaces/IPluginManager.h"
 #include "Runtime/JsonUtilities/Public/JsonObjectConverter.h"
 #include "Misc/ConfigCacheIni.h"
@@ -572,7 +571,7 @@ GConfig->GetBool(
                            
 if (bSettingSuccess)
 {
-    UE_LOG(LogTemp, Error, TEXT("Bidapp settings read success"));
+    UE_LOG(LogTemp, Warning, TEXT("Bidapp settings read success"));
     if(bEnableTestModeValue){
         SetTestEnable();
     }
@@ -1089,7 +1088,7 @@ void ForwardEvent(const FString &Name, const FString &Body)
         }
         else
         {
-            MAX_USER_WARN("Unknown MAX ad event fired: %s", *Name);
+           UE_LOG(LogTemp, Warning, TEXT("Unknown Bidapp ad event fired: %s"), *Name);
         }
     }
 }

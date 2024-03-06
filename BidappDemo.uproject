@@ -26,7 +26,8 @@
 		},
 		{
 			"Name": "Bidapp",
-			"Enabled": true
+			"Enabled": true,
+			"MarketplaceURL": "https://www.unrealengine.com/marketplace/en-US/product/Bidapp"
 		},
 		{
 			"Name": "BlueprintScreenshotTool",
@@ -37,6 +38,11 @@
 			"Name": "ADSCore",
 			"Enabled": false,
 			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/product/e3aa986643c84ca99304d8762e547c13"
+		},
+		{
+			"Name": "PluginBuilder",
+			"Enabled": true,
+			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/content/8480a6b969b047aca3ab8957509730dd"
 		}
 	],
 	"TargetPlatforms": [

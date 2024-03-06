@@ -1,5 +1,3 @@
-// Copyright AppLovin Corporation. All Rights Reserved.
-
 #include "AndroidJavaBidappUnrealPlugin.h"
 
 #if PLATFORM_ANDROID
