@@ -10,4 +10,7 @@ struct BIDAPP_API FAdError
 
     UPROPERTY(BlueprintReadOnly, Category = "Bidapp")
     FString Message;
+
+    UPROPERTY(BlueprintReadOnly, Category = "Bidapp")
+    FString AdUnitIdentifier;
 };

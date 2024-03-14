@@ -1,6 +1,5 @@
 #include "BidappDemoGameModeBase.h"
 #include "Bidapp.h"
-#include "Constants.h"
 #include "DemoLogger.h"
 
 ABidappDemoGameModeBase::ABidappDemoGameModeBase(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)

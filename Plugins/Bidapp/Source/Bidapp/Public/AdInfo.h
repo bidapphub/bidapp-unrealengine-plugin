@@ -14,6 +14,9 @@ struct BIDAPP_API FAdInfo
     FString AdUnitPlacement;
 
     UPROPERTY(BlueprintReadOnly, Category = "Bidapp")
+    FString AdUnitIdentifier;
+
+    UPROPERTY(BlueprintReadOnly, Category = "Bidapp")
     FString NetworkId;
 
     UPROPERTY(BlueprintReadOnly, Category = "Bidapp")

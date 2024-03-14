@@ -50,13 +50,27 @@
   <AARImports>
     <if condition="bEnabled">
       <true>
-        <insertValue value="io.bidapp,sdk,1.0.4" />
+        <insertValue value="io.bidapp,sdk,1.0.5" />
         <insertNewline/>
         <insertValue value="org.jetbrains.kotlin,kotlin-stdlib,1.9.21" />
         <insertNewline/>
         <insertValue value="org.jetbrains.kotlinx,kotlinx-coroutines-android,1.7.3" />
         <insertNewline/>
-      <insertValue value="io.bidapp.networks,unity,1.0.2" />
+      <insertValue value="io.bidapp.networks,liftoff,1.0.3" />
+      <insertNewline/>
+      <insertValue value="io.bidapp.networks,applovin,1.0.3" />
+      <insertNewline/>
+      <insertValue value="io.bidapp.networks,applovinmax,1.0.3" />
+      <insertNewline/>
+      <insertValue value="io.bidapp.networks,unity,1.0.3" />
+      <insertNewline/>
+      <insertValue value="io.bidapp.networks,chartboost,1.0.3" />
+      <insertNewline/>
+      <insertValue value="io.bidapp.networks,digitalturbine,1.0.3" />
+      <insertNewline/>
+      <insertValue value="io.bidapp.networks,facebook,1.0.3" />
+      <insertNewline/>
+      <insertValue value="io.bidapp.networks,yandex,1.0.3" />
       <insertNewline/>
 <insertValue value="repository $S(PluginDir)/../ThirdParty/Android/repository" />
         <insertNewline/>
@@ -88,7 +102,7 @@
          
           // Prefer newer versions of Play Services, particularly for below UE 5.2
           dependencies {
-      implementation('io.bidapp.networks:admob:1.0.2')
+      implementation('io.bidapp.networks:admob:1.0.3')
        {
           exclude group: 'com.google.android.gms', module: 'play-services-ads'
        }

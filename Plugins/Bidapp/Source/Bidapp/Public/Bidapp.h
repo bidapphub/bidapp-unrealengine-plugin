@@ -58,13 +58,13 @@ public:
     static bool IsInitialized();
 
     UFUNCTION(BlueprintCallable, Category = "Bidapp")
-    static void SetHasUserConsent(bool bHasUserConsent);
+    static void SetGDPR(bool bGDPR);
 
     UFUNCTION(BlueprintCallable, Category = "Bidapp")
-    static void SetIsAgeRestrictedUser(bool bIsAgeRestrictedUser);
+    static void SetCOPPA(bool bCOPPA);
 
     UFUNCTION(BlueprintCallable, Category = "Bidapp")
-    static void SetDoNotSell(bool bDoNotSell);   
+    static void SetCCPA(bool bCCPA);   
 
     UFUNCTION(BlueprintCallable, Category = "Bidapp")
     static bool IsVerboseLoggingEnabled();
@@ -74,69 +74,75 @@ public:
 
 
     UFUNCTION(BlueprintCallable, Category = "Bidapp")
-    static void CreateBanner(BBannerVerticalPosition vertical = BBannerVerticalPosition::Bottom, BBannerHorizontalPosition horizontal = BBannerHorizontalPosition::Center);
+    static void CreateBanner(const FString &AdUnitIdentifier, BBannerVerticalPosition vertical = BBannerVerticalPosition::Bottom, BBannerHorizontalPosition horizontal = BBannerHorizontalPosition::Center);
 
     UFUNCTION(BlueprintCallable, Category = "Bidapp")
-    static void ShowBanner();
+    static void ShowBanner(const FString &AdUnitIdentifier);
 
     UFUNCTION(BlueprintCallable, Category = "Bidapp")
-    static void HideBanner();
+    static void HideBanner(const FString &AdUnitIdentifier);
 
     UFUNCTION(BlueprintCallable, Category = "Bidapp")
-    static void DestroyBanner();
+    static void DestroyBanner(const FString &AdUnitIdentifier);
 
     UFUNCTION(BlueprintCallable, Category = "Bidapp")
-    static void StartAutorefreshBanner(int32 interval = 30);
+    static void StartAutorefreshBanner(const FString &AdUnitIdentifier, int32 interval = 30);
 
     UFUNCTION(BlueprintCallable, Category = "Bidapp")
-    static void StopAutorefreshBanner();
-
-
-
-    UFUNCTION(BlueprintCallable, Category = "Bidapp")
-    static void CreateMrec(BBannerVerticalPosition vertical = BBannerVerticalPosition::Bottom, BBannerHorizontalPosition horizontal = BBannerHorizontalPosition::Center);
-
-    UFUNCTION(BlueprintCallable, Category = "Bidapp")
-    static void ShowMrec();
-
-    UFUNCTION(BlueprintCallable, Category = "Bidapp")
-    static void HideMrec();
-
-    UFUNCTION(BlueprintCallable, Category = "Bidapp")
-    static void DestroyMrec();
-
-    UFUNCTION(BlueprintCallable, Category = "Bidapp")
-    static void StartAutorefreshMrec(int32 interval = 30);
-
-    UFUNCTION(BlueprintCallable, Category = "Bidapp")
-    static void StopAutorefreshMrec();
+    static void StopAutorefreshBanner(const FString &AdUnitIdentifier);
 
 
 
     UFUNCTION(BlueprintCallable, Category = "Bidapp")
-    static void CreateInterstitial(bool AutoCaching);
+    static void CreateMrec(const FString &AdUnitIdentifier, BBannerVerticalPosition vertical = BBannerVerticalPosition::Bottom, BBannerHorizontalPosition horizontal = BBannerHorizontalPosition::Center);
 
     UFUNCTION(BlueprintCallable, Category = "Bidapp")
-    static bool IsInterstitialReady();
+    static void ShowMrec(const FString &AdUnitIdentifier);
 
     UFUNCTION(BlueprintCallable, Category = "Bidapp")
-    static void ShowInterstitial();
+    static void HideMrec(const FString &AdUnitIdentifier);
 
     UFUNCTION(BlueprintCallable, Category = "Bidapp")
-    static void LoadInterstitial();
+    static void DestroyMrec(const FString &AdUnitIdentifier);
+
+    UFUNCTION(BlueprintCallable, Category = "Bidapp")
+    static void StartAutorefreshMrec(const FString &AdUnitIdentifier, int32 interval = 30);
+
+    UFUNCTION(BlueprintCallable, Category = "Bidapp")
+    static void StopAutorefreshMrec(const FString &AdUnitIdentifier);
+
+
+
+    UFUNCTION(BlueprintCallable, Category = "Bidapp")
+    static void CreateInterstitial(const FString &AdUnitIdentifier, bool AutoCaching);
+
+    UFUNCTION(BlueprintCallable, Category = "Bidapp")
+    static bool IsInterstitialReady(const FString &AdUnitIdentifier);
+
+    UFUNCTION(BlueprintCallable, Category = "Bidapp")
+    static void ShowInterstitial(const FString &AdUnitIdentifier);
+
+    UFUNCTION(BlueprintCallable, Category = "Bidapp")
+    static void LoadInterstitial(const FString &AdUnitIdentifier);
+
+    UFUNCTION(BlueprintCallable, Category = "Bidapp")
+    static void DestroyInterstitial(const FString &AdUnitIdentifier);
 
     
     UFUNCTION(BlueprintCallable, Category = "Bidapp")
-    static void CreateRewarded(bool AutoCaching);
+    static void CreateRewarded(const FString &AdUnitIdentifier, bool AutoCaching);
 
     UFUNCTION(BlueprintCallable, Category = "Bidapp")
-    static bool IsRewardedReady();
+    static bool IsRewardedReady(const FString &AdUnitIdentifier);
 
     UFUNCTION(BlueprintCallable, Category = "Bidapp")
-    static void ShowRewarded();
+    static void ShowRewarded(const FString &AdUnitIdentifier);
 
     UFUNCTION(BlueprintCallable, Category = "Bidapp")
-    static void LoadRewarded();
+    static void LoadRewarded(const FString &AdUnitIdentifier);
+
+    UFUNCTION(BlueprintCallable, Category = "Bidapp")
+    static void DestroyRewarded(const FString &AdUnitIdentifier);
 
 
 

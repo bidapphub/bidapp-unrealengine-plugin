@@ -66,9 +66,6 @@ public:
     UPROPERTY(config, EditAnywhere, Category = "Admob Application Id")
     FString AdmobAppId;
 
-    UPROPERTY(config, EditAnywhere, Category = "Applovin Application Id")
-    FString AppLovinAppId;
-
     UBidappSettings()
         : PubId(TEXT("")), bEnableTestMode(false), bEnableLogging(true), bEnableBannerAdFormat(true), 
           bEnableInterstitialAdFormat(true), bEnableRewardAdFormat(true),
@@ -76,7 +73,7 @@ public:
           bApplovinMax(true), bUnity(true),
           bAdmob(true), bChartboost(true),
           bDigitalTurbine(true), bFacebook(true),
-          bYandex(true), AdmobAppId(TEXT("")), AppLovinAppId(TEXT(""))
+          bYandex(true), AdmobAppId(TEXT(""))
     {
     }
 

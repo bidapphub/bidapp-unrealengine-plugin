@@ -9,9 +9,9 @@ FJavaAndroidBidappUnrealPlugin::FJavaAndroidBidappUnrealPlugin()
     : FJavaClassObject(GetClassName(), "(Landroid/app/Activity;)V", FAndroidApplication::GetGameActivityThis()),
       InitializeMethod(GetClassMethod("initialize", "(Ljava/lang/String;Ljava/lang/String;Lio/bidapp/unreal/BidappUnrealPlugin$EventListener;)V")),
       IsInitializedMethod(GetClassMethod("isInitialized", "()Z")),
-      SetHasUserConsentMethod(GetClassMethod("setHasUserConsent", "(Z)V")),
-      SetIsAgeRestrictedUserMethod(GetClassMethod("setIsAgeRestrictedUser", "(Z)V")),
-      SetDoNotSellMethod(GetClassMethod("setDoNotSell", "(Z)V")),
+      SetGDPRMethod(GetClassMethod("setGDPR", "(Z)V")),
+      SetCOPPAMethod(GetClassMethod("setCOPPA", "(Z)V")),
+      SetCCPAMethod(GetClassMethod("setCCPA", "(Z)V")),
       SetVerboseLoggingEnabledMethod(GetClassMethod("setVerboseLoggingEnabled", "()V")),
       IsVerboseLoggingEnabledMethod(GetClassMethod("isVerboseLoggingEnabled", "()Z")),
       SetTestEnableMethod(GetClassMethod("setTestEnable", "()V")),
@@ -19,28 +19,30 @@ FJavaAndroidBidappUnrealPlugin::FJavaAndroidBidappUnrealPlugin()
       SetInterstitialEnableMethod(GetClassMethod("setInterstitialEnable", "()V")),
       SetBannerEnableMethod(GetClassMethod("setBannerEnable", "()V")),
       
-      CreateBannerMethod(GetClassMethod("createBanner", "(Ljava/lang/String;Ljava/lang/String;)V")),
-      ShowBannerMethod(GetClassMethod("showBanner", "()V")),
-      HideBannerMethod(GetClassMethod("hideBanner", "()V")),
-      StartAutorefreshBannerMethod(GetClassMethod("startAutorefreshBanner", "(I)V")),
-      StopAutorefreshBannerMethod(GetClassMethod("stopAutorefreshBanner", "()V")),
-      DestroyBannerMethod(GetClassMethod("destroyBanner", "()V")),
+      CreateBannerMethod(GetClassMethod("createBanner", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V")),
+      ShowBannerMethod(GetClassMethod("showBanner", "(Ljava/lang/String;)V")),
+      HideBannerMethod(GetClassMethod("hideBanner", "(Ljava/lang/String;)V")),
+      StartAutorefreshBannerMethod(GetClassMethod("startAutorefreshBanner", "(Ljava/lang/String;I)V")),
+      StopAutorefreshBannerMethod(GetClassMethod("stopAutorefreshBanner", "(Ljava/lang/String;)V")),
+      DestroyBannerMethod(GetClassMethod("destroyBanner", "(Ljava/lang/String;)V")),
 
-      CreateMrecMethod(GetClassMethod("createMrec", "(Ljava/lang/String;Ljava/lang/String;)V")),
-      ShowMrecMethod(GetClassMethod("showMrec", "()V")),
-      HideMrecMethod(GetClassMethod("hideMrec", "()V")),
-      StartAutorefreshMrecMethod(GetClassMethod("startAutorefreshMrec", "(I)V")),
-      StopAutorefreshMrecMethod(GetClassMethod("stopAutorefreshMrec", "()V")),
-      DestroyMrecMethod(GetClassMethod("destroyMrec", "()V")),
+      CreateMrecMethod(GetClassMethod("createMrec", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V")),
+      ShowMrecMethod(GetClassMethod("showMrec", "(Ljava/lang/String;)V")),
+      HideMrecMethod(GetClassMethod("hideMrec", "(Ljava/lang/String;)V")),
+      StartAutorefreshMrecMethod(GetClassMethod("startAutorefreshMrec", "(Ljava/lang/String;I)V")),
+      StopAutorefreshMrecMethod(GetClassMethod("stopAutorefreshMrec", "(Ljava/lang/String;)V")),
+      DestroyMrecMethod(GetClassMethod("destroyMrec", "(Ljava/lang/String;)V")),
 
-      IsInterstitialReadyMethod(GetClassMethod("isInterstitialReady", "()Z")),
-      ShowInterstitialMethod(GetClassMethod("showInterstitial", "()V")),
-      CreateInterstitialMethod(GetClassMethod("createInterstitial", "(Z)V")),
-      LoadInterstitialMethod(GetClassMethod("loadInterstitial", "()V")),
-      CreateRewardedMethod(GetClassMethod("createRewarded", "(Z)V")),
-      LoadRewardedMethod(GetClassMethod("loadRewarded", "()V")),
-      IsRewardedReadyMethod(GetClassMethod("isRewardedReady", "()Z")),
-      ShowRewardedMethod(GetClassMethod("showRewarded", "()V"))
+      IsInterstitialReadyMethod(GetClassMethod("isInterstitialReady", "(Ljava/lang/String;)Z")),
+      ShowInterstitialMethod(GetClassMethod("showInterstitial", "(Ljava/lang/String;)V")),
+      CreateInterstitialMethod(GetClassMethod("createInterstitial", "(Ljava/lang/String;Z)V")),
+      LoadInterstitialMethod(GetClassMethod("loadInterstitial", "(Ljava/lang/String;)V")),
+      DestroyInterstitialMethod(GetClassMethod("destroyInterstitial", "(Ljava/lang/String;)V")),
+      CreateRewardedMethod(GetClassMethod("createRewarded", "(Ljava/lang/String;Z)V")),
+      LoadRewardedMethod(GetClassMethod("loadRewarded", "(Ljava/lang/String;)V")),
+      IsRewardedReadyMethod(GetClassMethod("isRewardedReady", "(Ljava/lang/String;)Z")),
+      ShowRewardedMethod(GetClassMethod("showRewarded", "(Ljava/lang/String;)V")),
+      DestroyRewardedMethod(GetClassMethod("destroyRewarded", "(Ljava/lang/String;)V"))
 {
 }
 
@@ -69,20 +71,20 @@ bool FJavaAndroidBidappUnrealPlugin::IsInitialized()
 
 // MARK: - Privacy
 
-void FJavaAndroidBidappUnrealPlugin::SetHasUserConsent(bool bHasUserConsent)
+void FJavaAndroidBidappUnrealPlugin::SetGDPR(bool bGDPR)
 {
-    CallMethod<void>(SetHasUserConsentMethod, bHasUserConsent);
+    CallMethod<void>(SetGDPRMethod, bGDPR);
 }
 
-void FJavaAndroidBidappUnrealPlugin::SetIsAgeRestrictedUser(bool bIsAgeRestrictedUser)
+void FJavaAndroidBidappUnrealPlugin::SetCOPPA(bool bCOPPA)
 {
-    CallMethod<void>(SetIsAgeRestrictedUserMethod, bIsAgeRestrictedUser);
+    CallMethod<void>(SetCOPPAMethod, bCOPPA);
 }
 
 
-void FJavaAndroidBidappUnrealPlugin::SetDoNotSell(bool bDoNotSell)
+void FJavaAndroidBidappUnrealPlugin::SetCCPA(bool bCCPA)
 {
-    CallMethod<void>(SetDoNotSellMethod, bDoNotSell);
+    CallMethod<void>(SetCCPAMethod, bCCPA);
 }
 
 
@@ -122,67 +124,67 @@ void FJavaAndroidBidappUnrealPlugin::SetBannerEnable()
 
 // MARK: - Banners
 
-void FJavaAndroidBidappUnrealPlugin::CreateBanner(const FString &BannerVerticalPosition, const FString &BannerHorizontalPosition)
+void FJavaAndroidBidappUnrealPlugin::CreateBanner(const FString &AdUnitIdentifier, const FString &BannerVerticalPosition, const FString &BannerHorizontalPosition)
 {
-    return CallMethod<void>(CreateBannerMethod, *GetJString(BannerVerticalPosition), *GetJString(BannerHorizontalPosition));
+    return CallMethod<void>(CreateBannerMethod, *GetJString(AdUnitIdentifier), *GetJString(BannerVerticalPosition), *GetJString(BannerHorizontalPosition));
 }
 
-void FJavaAndroidBidappUnrealPlugin::ShowBanner()
+void FJavaAndroidBidappUnrealPlugin::ShowBanner(const FString &AdUnitIdentifier)
 {
-    return CallMethod<void>(ShowBannerMethod);
+    return CallMethod<void>(ShowBannerMethod, *GetJString(AdUnitIdentifier));
 }
 
-void FJavaAndroidBidappUnrealPlugin::HideBanner()
+void FJavaAndroidBidappUnrealPlugin::HideBanner(const FString &AdUnitIdentifier)
 {
-    return CallMethod<void>(HideBannerMethod);
+    return CallMethod<void>(HideBannerMethod, *GetJString(AdUnitIdentifier));
 }
 
-void FJavaAndroidBidappUnrealPlugin::DestroyBanner()
+void FJavaAndroidBidappUnrealPlugin::DestroyBanner(const FString &AdUnitIdentifier)
 {
-    return CallMethod<void>(DestroyBannerMethod);
+    return CallMethod<void>(DestroyBannerMethod, *GetJString(AdUnitIdentifier));
 }
 
-void FJavaAndroidBidappUnrealPlugin::StartAutorefreshBanner(int32 interval)
+void FJavaAndroidBidappUnrealPlugin::StartAutorefreshBanner(const FString &AdUnitIdentifier, int32 interval)
 {
-    return CallMethod<void>(StartAutorefreshBannerMethod, interval);
+    return CallMethod<void>(StartAutorefreshBannerMethod, *GetJString(AdUnitIdentifier), interval);
 }
 
-void FJavaAndroidBidappUnrealPlugin::StopAutorefreshBanner()
+void FJavaAndroidBidappUnrealPlugin::StopAutorefreshBanner(const FString &AdUnitIdentifier)
 {
-    return CallMethod<void>(StopAutorefreshBannerMethod);
+    return CallMethod<void>(StopAutorefreshBannerMethod, *GetJString(AdUnitIdentifier));
 }
 
 
 // MARK: - Mrec
 
-void FJavaAndroidBidappUnrealPlugin::CreateMrec(const FString &MrecVerticalPosition, const FString &MrecHorizontalPosition)
+void FJavaAndroidBidappUnrealPlugin::CreateMrec(const FString &AdUnitIdentifier, const FString &MrecVerticalPosition, const FString &MrecHorizontalPosition)
 {
-    return CallMethod<void>(CreateMrecMethod, *GetJString(MrecVerticalPosition), *GetJString(MrecHorizontalPosition));
+    return CallMethod<void>(CreateMrecMethod, *GetJString(AdUnitIdentifier), *GetJString(MrecVerticalPosition), *GetJString(MrecHorizontalPosition));
 }
 
-void FJavaAndroidBidappUnrealPlugin::ShowMrec()
+void FJavaAndroidBidappUnrealPlugin::ShowMrec(const FString &AdUnitIdentifier)
 {
-    return CallMethod<void>(ShowMrecMethod);
+    return CallMethod<void>(ShowMrecMethod, *GetJString(AdUnitIdentifier));
 }
 
-void FJavaAndroidBidappUnrealPlugin::HideMrec()
+void FJavaAndroidBidappUnrealPlugin::HideMrec(const FString &AdUnitIdentifier)
 {
-    return CallMethod<void>(HideMrecMethod);
+    return CallMethod<void>(HideMrecMethod, *GetJString(AdUnitIdentifier));
 }
 
-void FJavaAndroidBidappUnrealPlugin::DestroyMrec()
+void FJavaAndroidBidappUnrealPlugin::DestroyMrec(const FString &AdUnitIdentifier)
 {
-    return CallMethod<void>(DestroyMrecMethod);
+    return CallMethod<void>(DestroyMrecMethod, *GetJString(AdUnitIdentifier));
 }
 
-void FJavaAndroidBidappUnrealPlugin::StartAutorefreshMrec(int32 interval)
+void FJavaAndroidBidappUnrealPlugin::StartAutorefreshMrec(const FString &AdUnitIdentifier, int32 interval)
 {
-    return CallMethod<void>(StartAutorefreshMrecMethod, interval);
+    return CallMethod<void>(StartAutorefreshMrecMethod, *GetJString(AdUnitIdentifier), interval);
 }
 
-void FJavaAndroidBidappUnrealPlugin::StopAutorefreshMrec()
+void FJavaAndroidBidappUnrealPlugin::StopAutorefreshMrec(const FString &AdUnitIdentifier)
 {
-    return CallMethod<void>(StopAutorefreshMrecMethod);
+    return CallMethod<void>(StopAutorefreshMrecMethod, *GetJString(AdUnitIdentifier));
 }
 
 
@@ -191,48 +193,58 @@ void FJavaAndroidBidappUnrealPlugin::StopAutorefreshMrec()
 // MARK: - Interstitials
 
 
-bool FJavaAndroidBidappUnrealPlugin::IsInterstitialReady()
+bool FJavaAndroidBidappUnrealPlugin::IsInterstitialReady(const FString &AdUnitIdentifier)
 {
-    return CallMethod<bool>(IsInterstitialReadyMethod);
+    return CallMethod<bool>(IsInterstitialReadyMethod, *GetJString(AdUnitIdentifier));
 }
 
-void FJavaAndroidBidappUnrealPlugin::ShowInterstitial()
+void FJavaAndroidBidappUnrealPlugin::ShowInterstitial(const FString &AdUnitIdentifier)
 {
-    CallMethod<void>(ShowInterstitialMethod);
+    CallMethod<void>(ShowInterstitialMethod, *GetJString(AdUnitIdentifier));
 }
-void FJavaAndroidBidappUnrealPlugin::CreateInterstitial(bool autoCaching)
+void FJavaAndroidBidappUnrealPlugin::CreateInterstitial(const FString &AdUnitIdentifier, bool autoCaching)
 {
-    CallMethod<void>(CreateInterstitialMethod, autoCaching);
+    CallMethod<void>(CreateInterstitialMethod, *GetJString(AdUnitIdentifier), autoCaching);
 }
 
-void FJavaAndroidBidappUnrealPlugin::LoadInterstitial()
+void FJavaAndroidBidappUnrealPlugin::LoadInterstitial(const FString &AdUnitIdentifier)
 {
-    CallMethod<void>(LoadInterstitialMethod);
+    CallMethod<void>(LoadInterstitialMethod, *GetJString(AdUnitIdentifier));
 }
+
+void FJavaAndroidBidappUnrealPlugin::DestroyInterstitial(const FString &AdUnitIdentifier)
+{
+    CallMethod<void>(DestroyInterstitialMethod, *GetJString(AdUnitIdentifier));
+}
+
 
 
 // MARK: - Rewarded
 
-bool FJavaAndroidBidappUnrealPlugin::IsRewardedReady()
+bool FJavaAndroidBidappUnrealPlugin::IsRewardedReady(const FString &AdUnitIdentifier)
 {
-    return CallMethod<bool>(IsRewardedReadyMethod);
+    return CallMethod<bool>(IsRewardedReadyMethod, *GetJString(AdUnitIdentifier));
 }
 
-void FJavaAndroidBidappUnrealPlugin::ShowRewarded()
+void FJavaAndroidBidappUnrealPlugin::ShowRewarded(const FString &AdUnitIdentifier)
 {
-    CallMethod<void>(ShowRewardedMethod);
+    CallMethod<void>(ShowRewardedMethod, *GetJString(AdUnitIdentifier));
 }
 
-void FJavaAndroidBidappUnrealPlugin::CreateRewarded(bool autoCaching)
+void FJavaAndroidBidappUnrealPlugin::CreateRewarded(const FString &AdUnitIdentifier, bool autoCaching)
 {
-    CallMethod<void>(CreateRewardedMethod, autoCaching);
+    CallMethod<void>(CreateRewardedMethod, *GetJString(AdUnitIdentifier), autoCaching);
 }
 
-void FJavaAndroidBidappUnrealPlugin::LoadRewarded()
+void FJavaAndroidBidappUnrealPlugin::LoadRewarded(const FString &AdUnitIdentifier)
 {
-    CallMethod<void>(LoadRewardedMethod);
+    CallMethod<void>(LoadRewardedMethod, *GetJString(AdUnitIdentifier));
 }
 
+void FJavaAndroidBidappUnrealPlugin::DestroyRewarded(const FString &AdUnitIdentifier)
+{
+    CallMethod<void>(DestroyRewardedMethod, *GetJString(AdUnitIdentifier));
+}
 
 // MARK: - Private
 

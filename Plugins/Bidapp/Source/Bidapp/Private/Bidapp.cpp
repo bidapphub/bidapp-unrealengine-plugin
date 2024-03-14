@@ -622,31 +622,31 @@ bool UBidapp::IsInitialized()
 
 // Privacy
 
-void UBidapp::SetHasUserConsent(bool bHasUserConsent)
+void UBidapp::SetGDPR(bool bGDPR)
 {
 #if PLATFORM_IOS
-    [GetIOSPlugin() setHasUserConsent:bHasUserConsent];
+    [GetIOSPlugin() setGDPR:bGDPR];
 #elif PLATFORM_ANDROID
-    GetAndroidPlugin()->SetHasUserConsent(bHasUserConsent);
+    GetAndroidPlugin()->SetGDPR(bGDPR);
 #endif
 }
 
 
-void UBidapp::SetIsAgeRestrictedUser(bool bIsAgeRestrictedUser)
+void UBidapp::SetCOPPA(bool bCOPPA)
 {
 #if PLATFORM_IOS
-    [GetIOSPlugin() setIsAgeRestrictedUser:bIsAgeRestrictedUser];
+    [GetIOSPlugin() setCOPPA:bCOPPA];
 #elif PLATFORM_ANDROID
-    GetAndroidPlugin()->SetIsAgeRestrictedUser(bIsAgeRestrictedUser);
+    GetAndroidPlugin()->SetCOPPA(bCOPPA);
 #endif
 }
 
-void UBidapp::SetDoNotSell(bool bDoNotSell)
+void UBidapp::SetCCPA(bool bCCPA)
 {
 #if PLATFORM_IOS
-    [GetIOSPlugin() setDoNotSell:bDoNotSell];
+    [GetIOSPlugin() SetCCPA:bCCPA];
 #elif PLATFORM_ANDROID
-    GetAndroidPlugin()->SetDoNotSell(bDoNotSell);
+    GetAndroidPlugin()->SetCCPA(bCCPA);
 #endif
 }
 
@@ -714,186 +714,196 @@ void UBidapp::SetTestEnable()
 
 // Banners
 
-void UBidapp::CreateBanner(BBannerVerticalPosition BannerVerticalPosition, BBannerHorizontalPosition BannerHorizontalPosition)
+void UBidapp::CreateBanner(const FString &AdUnitIdentifier, BBannerVerticalPosition BannerVerticalPosition, BBannerHorizontalPosition BannerHorizontalPosition)
 {
 const FString BannerVerticalString = GetBannerVerticalString(BannerVerticalPosition);
 const FString BannerHorizontalString = GetBannerHorizontalString(BannerHorizontalPosition);
 #if PLATFORM_IOS
     [GetIOSPlugin() createBannerWithPositionH:BannerHorizontalString.GetNSString() V:BannerVerticalString.GetNSString()];
 #elif PLATFORM_ANDROID
-    GetAndroidPlugin()->CreateBanner(BannerVerticalString, BannerHorizontalString);
+    GetAndroidPlugin()->CreateBanner(AdUnitIdentifier, BannerVerticalString, BannerHorizontalString);
 #endif
 }
 
-void UBidapp::ShowBanner()
+void UBidapp::ShowBanner(const FString &AdUnitIdentifier)
 {
 #if PLATFORM_IOS
     [GetIOSPlugin() showBanner];
 #elif PLATFORM_ANDROID
-    GetAndroidPlugin()->ShowBanner();
+    GetAndroidPlugin()->ShowBanner(AdUnitIdentifier);
 #endif
 }
 
-void UBidapp::HideBanner()
+void UBidapp::HideBanner(const FString &AdUnitIdentifier)
 {
 #if PLATFORM_IOS
     [GetIOSPlugin() hideBanner];
 #elif PLATFORM_ANDROID
-    GetAndroidPlugin()->HideBanner();
+    GetAndroidPlugin()->HideBanner(AdUnitIdentifier);
 #endif
 }
 
-void UBidapp::DestroyBanner()
+void UBidapp::DestroyBanner(const FString &AdUnitIdentifier)
 {
 #if PLATFORM_IOS
     [GetIOSPlugin() destroyBanner];
 #elif PLATFORM_ANDROID
-    GetAndroidPlugin()->DestroyBanner();
+    GetAndroidPlugin()->DestroyBanner(AdUnitIdentifier);
 #endif
 }
 
-void UBidapp::StartAutorefreshBanner(int32 interval)
+void UBidapp::StartAutorefreshBanner(const FString &AdUnitIdentifier, int32 interval)
 {
 #if PLATFORM_IOS
     [GetIOSPlugin() startAutorefreshBanner:(int32_t)interval];
 #elif PLATFORM_ANDROID
-    GetAndroidPlugin()->StartAutorefreshBanner(interval);
+    GetAndroidPlugin()->StartAutorefreshBanner(AdUnitIdentifier, interval);
 #endif
 }
 
-void UBidapp::StopAutorefreshBanner()
+void UBidapp::StopAutorefreshBanner(const FString &AdUnitIdentifier)
 {
 #if PLATFORM_IOS
     [GetIOSPlugin() stopAutorefreshBanner];
 #elif PLATFORM_ANDROID
-    GetAndroidPlugin()->StopAutorefreshBanner();
+    GetAndroidPlugin()->StopAutorefreshBanner(AdUnitIdentifier);
 #endif
 }
 
 // Mrec
 
-void UBidapp::CreateMrec(BBannerVerticalPosition MrecVerticalPosition, BBannerHorizontalPosition MrecHorizontalPosition)
+void UBidapp::CreateMrec(const FString &AdUnitIdentifier, BBannerVerticalPosition MrecVerticalPosition, BBannerHorizontalPosition MrecHorizontalPosition)
 {
 const FString MRecVerticalString = GetBannerVerticalString(MrecVerticalPosition);
 const FString MRecHorizontalString = GetBannerHorizontalString(MrecHorizontalPosition);
 #if PLATFORM_IOS
     [GetIOSPlugin() createMrecWithPositionH:MRecHorizontalString.GetNSString() V:MRecVerticalString.GetNSString()];
 #elif PLATFORM_ANDROID
-    GetAndroidPlugin()->CreateMrec(MRecVerticalString, MRecHorizontalString);
+    GetAndroidPlugin()->CreateMrec(AdUnitIdentifier, MRecVerticalString, MRecHorizontalString);
 #endif
 }
 
-void UBidapp::ShowMrec()
+void UBidapp::ShowMrec(const FString &AdUnitIdentifier)
 {
 #if PLATFORM_IOS
     [GetIOSPlugin() showMrec];
 #elif PLATFORM_ANDROID
-    GetAndroidPlugin()->ShowMrec();
+    GetAndroidPlugin()->ShowMrec(AdUnitIdentifier);
 #endif
 }
 
-void UBidapp::HideMrec()
+void UBidapp::HideMrec(const FString &AdUnitIdentifier)
 {
 #if PLATFORM_IOS
     [GetIOSPlugin() hideMrec];
 #elif PLATFORM_ANDROID
-    GetAndroidPlugin()->HideBanner();
+    GetAndroidPlugin()->HideBanner(AdUnitIdentifier);
 #endif
 }
 
-void UBidapp::DestroyMrec()
+void UBidapp::DestroyMrec(const FString &AdUnitIdentifier)
 {
 #if PLATFORM_IOS
     [GetIOSPlugin() destroyMrec];
 #elif PLATFORM_ANDROID
-    GetAndroidPlugin()->DestroyMrec();
+    GetAndroidPlugin()->DestroyMrec(AdUnitIdentifier);
 #endif
 }
 
-void UBidapp::StartAutorefreshMrec(int32 interval)
+void UBidapp::StartAutorefreshMrec(const FString &AdUnitIdentifier, int32 interval)
 {
 #if PLATFORM_IOS
     [GetIOSPlugin() startAutorefreshMrec:(int32_t)interval];
 #elif PLATFORM_ANDROID
-    GetAndroidPlugin()->StartAutorefreshMrec(interval);
+    GetAndroidPlugin()->StartAutorefreshMrec(AdUnitIdentifier, interval);
 #endif
 }
 
-void UBidapp::StopAutorefreshMrec()
+void UBidapp::StopAutorefreshMrec(const FString &AdUnitIdentifier)
 {
 #if PLATFORM_IOS
     [GetIOSPlugin() stopAutorefreshMrec];
 #elif PLATFORM_ANDROID
-    GetAndroidPlugin()->StopAutorefreshMrec();
+    GetAndroidPlugin()->StopAutorefreshMrec(AdUnitIdentifier);
 #endif
 }
 
 
 // Interstitials
 
-void UBidapp::CreateInterstitial(bool autoCaching)
+void UBidapp::CreateInterstitial(const FString &AdUnitIdentifier, bool autoCaching)
 {
 #if PLATFORM_IOS
     [GetIOSPlugin() createInterstitialWithAdUnitIdentifier:@"111"];
 #elif PLATFORM_ANDROID
-    GetAndroidPlugin()->CreateInterstitial(autoCaching);
+    UE_LOG(LogTemp, Warning, TEXT("AdUnitIdentifier: %s"), *AdUnitIdentifier);
+    GetAndroidPlugin()->CreateInterstitial(AdUnitIdentifier, autoCaching);
 #endif
 }
 
-void UBidapp::LoadInterstitial()
+void UBidapp::LoadInterstitial(const FString &AdUnitIdentifier)
 {
 #if PLATFORM_IOS
     [GetIOSPlugin() loadInterstitialWithAdUnitIdentifier:@"111"];
 #elif PLATFORM_ANDROID
-    GetAndroidPlugin()->LoadInterstitial();
+    GetAndroidPlugin()->LoadInterstitial(AdUnitIdentifier);
 #endif
 }
 
-bool UBidapp::IsInterstitialReady()
+bool UBidapp::IsInterstitialReady(const FString &AdUnitIdentifier)
 {
 #if PLATFORM_IOS
     return [GetIOSPlugin() isInterstitialReadyWithAdUnitIdentifier:@"111"];
 #elif PLATFORM_ANDROID
-    return GetAndroidPlugin()->IsInterstitialReady();
+    return GetAndroidPlugin()->IsInterstitialReady(AdUnitIdentifier);
 #else
     return false;
 #endif
 }
 
 
-void UBidapp::ShowInterstitial()
+void UBidapp::ShowInterstitial(const FString &AdUnitIdentifier)
 {
 #if PLATFORM_IOS
     [GetIOSPlugin() showInterstitialWithAdUnitIdentifier:@"111"];
 #elif PLATFORM_ANDROID
-    GetAndroidPlugin()->ShowInterstitial();
+    GetAndroidPlugin()->ShowInterstitial(AdUnitIdentifier);
 #endif
 }
 
-void UBidapp::CreateRewarded(bool autoCaching)
+void UBidapp::DestroyInterstitial(const FString &AdUnitIdentifier)
+{
+#if PLATFORM_IOS
+    [GetIOSPlugin() DestroyInterstitialWithAdUnitIdentifier:@"111"];
+#elif PLATFORM_ANDROID
+    GetAndroidPlugin()->DestroyInterstitial(AdUnitIdentifier);
+#endif
+}
+
+void UBidapp::CreateRewarded(const FString &AdUnitIdentifier, bool autoCaching)
 {
 #if PLATFORM_IOS
     [GetIOSPlugin() createRewardedWithAdUnitIdentifier:@"888"];
 #elif PLATFORM_ANDROID
-     GetAndroidPlugin()->CreateRewarded(autoCaching);
+     GetAndroidPlugin()->CreateRewarded(AdUnitIdentifier, autoCaching);
 #endif
 }
 
-void UBidapp::LoadRewarded()
+void UBidapp::LoadRewarded(const FString &AdUnitIdentifier)
 {
 #if PLATFORM_IOS
     [GetIOSPlugin() loadRewardedWithAdUnitIdentifier:@"888"];
 #elif PLATFORM_ANDROID
-    GetAndroidPlugin()->LoadRewarded();
+    GetAndroidPlugin()->LoadRewarded(AdUnitIdentifier);
 #endif
 }
 
-bool UBidapp::IsRewardedReady()
+bool UBidapp::IsRewardedReady(const FString &AdUnitIdentifier)
 {
 #if PLATFORM_IOS
     return [GetIOSPlugin() isRewardedAdReadyWithAdUnitIdentifier:@"888"];
 #elif PLATFORM_ANDROID
-    return GetAndroidPlugin()->IsRewardedReady();
+    return GetAndroidPlugin()->IsRewardedReady(AdUnitIdentifier);
 #else
     return false;
 #endif
@@ -901,12 +911,21 @@ bool UBidapp::IsRewardedReady()
 
 
 
-void UBidapp::ShowRewarded()
+void UBidapp::ShowRewarded(const FString &AdUnitIdentifier)
 {
 #if PLATFORM_IOS
     [GetIOSPlugin() showRewardedAdWithAdUnitIdentifier:@"888"];
 #elif PLATFORM_ANDROID
-    GetAndroidPlugin()->ShowRewarded();
+    GetAndroidPlugin()->ShowRewarded(AdUnitIdentifier);
+#endif
+}
+
+void UBidapp::DestroyRewarded(const FString &AdUnitIdentifier)
+{
+#if PLATFORM_IOS
+    [GetIOSPlugin() DestroyRewardedAdWithAdUnitIdentifier:@"888"];
+#elif PLATFORM_ANDROID
+    GetAndroidPlugin()->DestroyRewarded(AdUnitIdentifier);
 #endif
 }
 

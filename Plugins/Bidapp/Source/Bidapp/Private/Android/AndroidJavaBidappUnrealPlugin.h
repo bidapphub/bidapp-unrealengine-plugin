@@ -17,9 +17,9 @@ public:
     bool IsInitialized();
 
     // MARK: Privacy
-    void SetHasUserConsent(bool bHasUserConsent);
-    void SetIsAgeRestrictedUser(bool bIsAgeRestrictedUser);
-    void SetDoNotSell(bool bDoNotSell);
+    void SetGDPR(bool bGDPR);
+    void SetCOPPA(bool bCOPPA);
+    void SetCCPA(bool bCCPA);
 
     // MARK: General
     void SetVerboseLoggingEnabled();
@@ -32,34 +32,36 @@ public:
 
 
     // MARK: Banners
-    void CreateBanner(const FString &BannerVericalPosition, const FString &BannerHorizontalPosition);
-    void ShowBanner();
-    void HideBanner();
-    void DestroyBanner();
-    void StartAutorefreshBanner(int32 interval);
-    void StopAutorefreshBanner();
+    void CreateBanner(const FString &AdUnitIdentifier, const FString &BannerVericalPosition, const FString &BannerHorizontalPosition);
+    void ShowBanner(const FString &AdUnitIdentifier);
+    void HideBanner(const FString &AdUnitIdentifier);
+    void DestroyBanner(const FString &AdUnitIdentifier);
+    void StartAutorefreshBanner(const FString &AdUnitIdentifier, int32 interval);
+    void StopAutorefreshBanner(const FString &AdUnitIdentifier);
 
     
     // MARK: Mrec
-    void CreateMrec(const FString &MrecVericalPosition, const FString &MrecHorizontalPosition);
-    void ShowMrec();
-    void HideMrec();
-    void DestroyMrec();
-    void StartAutorefreshMrec(int32 interval);
-    void StopAutorefreshMrec();
+    void CreateMrec(const FString &AdUnitIdentifier, const FString &MrecVericalPosition, const FString &MrecHorizontalPosition);
+    void ShowMrec(const FString &AdUnitIdentifier);
+    void HideMrec(const FString &AdUnitIdentifier);
+    void DestroyMrec(const FString &AdUnitIdentifier);
+    void StartAutorefreshMrec(const FString &AdUnitIdentifier, int32 interval);
+    void StopAutorefreshMrec(const FString &AdUnitIdentifier);
 
 
     // MARK: Interstitials
-    void CreateInterstitial(bool autoCaching);
-    bool IsInterstitialReady();
-    void ShowInterstitial();
-    void LoadInterstitial();
+    void CreateInterstitial(const FString &AdUnitIdentifier, bool autoCaching);
+    bool IsInterstitialReady(const FString &AdUnitIdentifier);
+    void ShowInterstitial(const FString &AdUnitIdentifier);
+    void LoadInterstitial(const FString &AdUnitIdentifier);
+    void DestroyInterstitial(const FString &AdUnitIdentifier);
 
     // MARK: Rewarded
-    void CreateRewarded(bool autoCaching);
-    bool IsRewardedReady();
-    void ShowRewarded();
-    void LoadRewarded();
+    void CreateRewarded(const FString &AdUnitIdentifier, bool autoCaching);
+    bool IsRewardedReady(const FString &AdUnitIdentifier);
+    void ShowRewarded(const FString &AdUnitIdentifier);
+    void LoadRewarded(const FString &AdUnitIdentifier);
+    void DestroyRewarded(const FString &AdUnitIdentifier);
 
 private:
     static FName GetClassName();
@@ -67,9 +69,9 @@ private:
     FJavaClassMethod InitializeMethod;
     FJavaClassMethod IsInitializedMethod;
 
-    FJavaClassMethod SetHasUserConsentMethod;
-    FJavaClassMethod SetIsAgeRestrictedUserMethod;
-    FJavaClassMethod SetDoNotSellMethod;
+    FJavaClassMethod SetGDPRMethod;
+    FJavaClassMethod SetCOPPAMethod;
+    FJavaClassMethod SetCCPAMethod;
 
     FJavaClassMethod SetVerboseLoggingEnabledMethod;
     FJavaClassMethod IsVerboseLoggingEnabledMethod;
@@ -96,11 +98,13 @@ private:
     FJavaClassMethod ShowInterstitialMethod;
     FJavaClassMethod CreateInterstitialMethod;
     FJavaClassMethod LoadInterstitialMethod;
+    FJavaClassMethod DestroyInterstitialMethod;
 
     FJavaClassMethod IsRewardedReadyMethod;
     FJavaClassMethod ShowRewardedMethod;
     FJavaClassMethod CreateRewardedMethod;
     FJavaClassMethod LoadRewardedMethod;
+    FJavaClassMethod DestroyRewardedMethod;
 };
 
 #endif
