@@ -836,7 +836,6 @@ void UBidapp::CreateInterstitial(const FString &AdUnitIdentifier, bool autoCachi
 #if PLATFORM_IOS
     [GetIOSPlugin() createInterstitialWithAdUnitIdentifier:@"111"];
 #elif PLATFORM_ANDROID
-    UE_LOG(LogTemp, Warning, TEXT("AdUnitIdentifier: %s"), *AdUnitIdentifier);
     GetAndroidPlugin()->CreateInterstitial(AdUnitIdentifier, autoCaching);
 #endif
 }

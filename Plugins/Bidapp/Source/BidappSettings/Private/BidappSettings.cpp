@@ -143,7 +143,7 @@ return;
     "  <AARImports>\n"
     "    <if condition=\"bEnabled\">\n"
     "      <true>\n"
-    "        <insertValue value=\"io.bidapp,sdk,1.0.5\" />\n"
+    "        <insertValue value=\"io.bidapp,sdk,1.0.6\" />\n"
     "        <insertNewline/>\n"
     "        <insertValue value=\"org.jetbrains.kotlin,kotlin-stdlib,1.9.21\" />\n"
     "        <insertNewline/>\n"
@@ -153,50 +153,50 @@ return;
 
 if (BidappSettings->bLiftoff)
 {
-    AARImportsString += "      <insertValue value=\"io.bidapp.networks,liftoff,1.0.3\" />\n";
+    AARImportsString += "      <insertValue value=\"io.bidapp.networks,liftoff,1.0.4\" />\n";
     AARImportsString += "      <insertNewline/>\n";
 }
 
 if (BidappSettings->bApplovin)
 {
-    AARImportsString += "      <insertValue value=\"io.bidapp.networks,applovin,1.0.3\" />\n";
+    AARImportsString += "      <insertValue value=\"io.bidapp.networks,applovin,1.0.4\" />\n";
     AARImportsString += "      <insertNewline/>\n";
 }
 
 if (BidappSettings->bApplovinMax)
 {
-    AARImportsString += "      <insertValue value=\"io.bidapp.networks,applovinmax,1.0.3\" />\n";
+    AARImportsString += "      <insertValue value=\"io.bidapp.networks,applovinmax,1.0.4\" />\n";
     AARImportsString += "      <insertNewline/>\n";
 }
 
 if (BidappSettings->bUnity)
 {
-    AARImportsString += "      <insertValue value=\"io.bidapp.networks,unity,1.0.3\" />\n";
+    AARImportsString += "      <insertValue value=\"io.bidapp.networks,unity,1.0.4\" />\n";
     AARImportsString += "      <insertNewline/>\n";
 }
 
 
 if (BidappSettings->bChartboost)
 {
-    AARImportsString += "      <insertValue value=\"io.bidapp.networks,chartboost,1.0.3\" />\n";
+    AARImportsString += "      <insertValue value=\"io.bidapp.networks,chartboost,1.0.4\" />\n";
     AARImportsString += "      <insertNewline/>\n";
 }
 
 if (BidappSettings->bDigitalTurbine)
 {
-    AARImportsString += "      <insertValue value=\"io.bidapp.networks,digitalturbine,1.0.3\" />\n";
+    AARImportsString += "      <insertValue value=\"io.bidapp.networks,digitalturbine,1.0.4\" />\n";
     AARImportsString += "      <insertNewline/>\n";
 }
 
 if (BidappSettings->bFacebook)
 {
-    AARImportsString += "      <insertValue value=\"io.bidapp.networks,facebook,1.0.3\" />\n";
+    AARImportsString += "      <insertValue value=\"io.bidapp.networks,facebook,1.0.4\" />\n";
     AARImportsString += "      <insertNewline/>\n";
 }
 
 if (BidappSettings->bYandex)
 {
-    AARImportsString += "      <insertValue value=\"io.bidapp.networks,yandex,1.0.3\" />\n";
+    AARImportsString += "      <insertValue value=\"io.bidapp.networks,yandex,1.0.4\" />\n";
     AARImportsString += "      <insertNewline/>\n";
 }
 
@@ -233,7 +233,7 @@ if (BidappSettings->bYandex)
     "          dependencies {\n";
 
     if (BidappSettings->bAdmob){
-    AARImportsString +=  "      implementation('io.bidapp.networks:admob:1.0.3')\n"
+    AARImportsString +=  "      implementation('io.bidapp.networks:admob:1.0.4')\n"
     "       {\n"
     "          exclude group: 'com.google.android.gms', module: 'play-services-ads'\n"
     "       }\n"
