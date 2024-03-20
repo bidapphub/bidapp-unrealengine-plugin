@@ -13,41 +13,38 @@ typedef void(*event_forwarder_t)(NSString*,NSString*);
 
 @interface BIDUnrealPlugin : NSObject
 {
-    NSString* bannerId;
-    NSString* mrecId;
     BOOL logging;
 }
 
--(void)createBannerWithPositionH:(NSString*)horizontalPosition V:(NSString*)verticalPosition;
--(void)showBanner;
--(void)hideBanner;
--(void)destroyBanner;
--(void)startAutorefreshBanner:(int32_t)interval;
--(void)stopAutorefreshBanner;
+-(void)createBannerWithAdUnitIdentifier:(NSString*)adUnitId H:(NSString*)horizontalPosition V:(NSString*)verticalPosition;
+-(void)showBannerWithAdUnitIdentifier:(NSString*)adUnitId;
+-(void)hideBannerWithAdUnitIdentifier:(NSString*)adUnitId;
+-(void)destroyBannerWithAdUnitIdentifier:(NSString*)adUnitId;
+-(void)startAutorefreshBanner:(int32_t)interval withAdUnitIdentifier:(NSString*)adUnitId;
+-(void)stopAutorefreshBannerWithAdUnitIdentifier:(NSString*)adUnitId;
 
--(void)createMrecWithPositionH:(NSString*)horizontalPosition V:(NSString*)verticalPosition;
--(void)showMrec;
--(void)hideMrec;
--(void)destroyMrec;
--(void)startAutorefreshMrec:(int32_t)interval;
--(void)stopAutorefreshMrec;
+-(void)createMrecWithAdUnitIdentifier:(NSString*)adUnitId H:(NSString*)horizontalPosition V:(NSString*)verticalPosition;
+-(void)showMrecWithAdUnitIdentifier:(NSString*)adUnitId;
+-(void)hideMrecWithAdUnitIdentifier:(NSString*)adUnitId;
+-(void)destroyMrecWithAdUnitIdentifier:(NSString*)adUnitId;
+-(void)startAutorefreshMrec:(int32_t)interval withAdUnitIdentifier:(NSString*)adUnitId;
+-(void)stopAutorefreshMrecWithAdUnitIdentifier:(NSString*)adUnitId;
 
 -(void)createInterstitialWithAdUnitIdentifier:(NSString*)adUnitId;
 -(void)loadInterstitialWithAdUnitIdentifier:(NSString*)adUnitId;
 -(BOOL)isInterstitialReadyWithAdUnitIdentifier:(NSString*)adUnitId;
 -(void)showInterstitialWithAdUnitIdentifier:(NSString*)adUnitId;
+-(void)destroyInterstitialWithAdUnitIdentifier:(NSString*)adUnitId;
 
 -(void)createRewardedWithAdUnitIdentifier:(NSString*)adUnitId;
 -(void)loadRewardedWithAdUnitIdentifier:(NSString*)adUnitId;
 -(BOOL)isRewardedAdReadyWithAdUnitIdentifier:(NSString*)adUnitId;
 -(void)showRewardedAdWithAdUnitIdentifier:(NSString*)adUnitId;
+-(void)destroyRewardedWithAdUnitIdentifier:(NSString*)adUnitId;
 
 -(void)initialize:(NSString*)pluginVersion pubIdValue:(NSString*)pubIdValue;
 -(BOOL)isInitialized;
 
--(void)setHasUserConsent:(BOOL)consentGiven;
--(void)setIsAgeRestrictedUser:(BOOL)ageRestricted;
--(void)setDoNotSell:(BOOL)doNotSell;
 -(void)setVerboseLoggingEnabled:(BOOL)enabled;
 -(BOOL)isVerboseLoggingEnabled;
 -(void)setTestEnable;
@@ -114,7 +111,7 @@ typedef BOOL(^adapter_filter_t)(int networkAdapterId);
     
     NSMutableDictionary* params = NSMutableDictionary.dictionary;
     
-    params[@"idt"] = idt;
+    params[@"AdUnitIdentifier"] = idt;
     params[@"AdUnitPlacement"] = placementId;
     params[@"NetworkId"] = networkId;
     params[@"WaterfallId"] = waterfallId;
@@ -174,110 +171,66 @@ typedef BOOL(^adapter_filter_t)(int networkAdapterId);
     return [@[[self adjustHorizontalPosition:h], [self adjustVerticalPosition:v]] componentsJoinedByString:@";"];
 }
 
--(void)createBannerWithPositionH:(NSString*)horizontalPosition V:(NSString*)verticalPosition
+-(void)createBannerWithAdUnitIdentifier:(NSString*)adUnitId H:(NSString*)horizontalPosition V:(NSString*)verticalPosition
 {
-    if (bannerId)
-    {
-        return;
-    }
-    
     NSString* position = [self adjustPositionH:horizontalPosition V:verticalPosition];
-    Bidapp_createBannerAtPosition_platform("320", position.UTF8String, "320x50");
-    bannerId = @"320";
+    Bidapp_createBannerAtPosition_platform(adUnitId.UTF8String, position.UTF8String, "320x50");
 }
 
--(void)showBanner
+-(void)showBannerWithAdUnitIdentifier:(NSString*)adUnitId
 {
-    if (bannerId)
-    {
-        Bidapp_showBanner_platform(bannerId.UTF8String);
-    }
+    Bidapp_showBanner_platform(adUnitId.UTF8String);
 }
 
--(void)hideBanner
+-(void)hideBannerWithAdUnitIdentifier:(NSString*)adUnitId
 {
-    if (bannerId)
-    {
-        Bidapp_hideBanner_platform(bannerId.UTF8String);
-    }
+    Bidapp_hideBanner_platform(adUnitId.UTF8String);
 }
 
--(void)destroyBanner
+-(void)destroyBannerWithAdUnitIdentifier:(NSString*)adUnitId
 {
-    if (bannerId)
-    {
-        Bidapp_destroyBanner_platform(bannerId.UTF8String);
-        bannerId = nil;
-    }
+    Bidapp_destroyBanner_platform(adUnitId.UTF8String);
 }
 
--(void)startAutorefreshBanner:(int32_t)interval
+-(void)startAutorefreshBanner:(int32_t)interval withAdUnitIdentifier:(NSString*)adUnitId
 {
-    if (bannerId)
-    {
-        Bidapp_setBannerRefreshInterval_platform(bannerId.UTF8String, ((double)interval)/1000.0);
-    }
+    Bidapp_setBannerRefreshInterval_platform(adUnitId.UTF8String, ((double)interval)/1000.0);
 }
 
--(void)stopAutorefreshBanner
+-(void)stopAutorefreshBannerWithAdUnitIdentifier:(NSString*)adUnitId
 {
-    if (bannerId)
-    {
-        Bidapp_setBannerRefreshInterval_platform(bannerId.UTF8String, 0.0);
-    }
+    Bidapp_setBannerRefreshInterval_platform(adUnitId.UTF8String, 0.0);
 }
 
--(void)createMrecWithPositionH:(NSString*)horizontalPosition V:(NSString*)verticalPosition
+-(void)createMrecWithAdUnitIdentifier:(NSString*)adUnitId H:(NSString*)horizontalPosition V:(NSString*)verticalPosition
 {
-    if (mrecId)
-    {
-        return;
-    }
-    
     NSString* position = [self adjustPositionH:horizontalPosition V:verticalPosition];
-    Bidapp_createBannerAtPosition_platform("300", position.UTF8String, "300x250");
-    mrecId = @"300";
+    Bidapp_createBannerAtPosition_platform(adUnitId.UTF8String, position.UTF8String, "300x250");
 }
 
--(void)showMrec
+-(void)showMrecWithAdUnitIdentifier:(NSString*)adUnitId
 {
-    if (mrecId)
-    {
-        Bidapp_showBanner_platform(mrecId.UTF8String);
-    }
+    Bidapp_showBanner_platform(adUnitId.UTF8String);
 }
 
--(void)hideMrec
+-(void)hideMrecWithAdUnitIdentifier:(NSString*)adUnitId
 {
-    if (mrecId)
-    {
-        Bidapp_hideBanner_platform(mrecId.UTF8String);
-    }
+    Bidapp_hideBanner_platform(adUnitId.UTF8String);
 }
 
--(void)destroyMrec
+-(void)destroyMrecWithAdUnitIdentifier:(NSString*)adUnitId
 {
-    if (mrecId)
-    {
-        Bidapp_destroyBanner_platform(mrecId.UTF8String);
-        mrecId = nil;
-    }
+    Bidapp_destroyBanner_platform(adUnitId.UTF8String);
 }
 
--(void)startAutorefreshMrec:(int32_t)interval
+-(void)startAutorefreshMrec:(int32_t)interval withAdUnitIdentifier:(NSString*)adUnitId
 {
-    if (mrecId)
-    {
-        Bidapp_setBannerRefreshInterval_platform(mrecId.UTF8String, ((double)interval)/1000.0);
-    }
+    Bidapp_setBannerRefreshInterval_platform(adUnitId.UTF8String, ((double)interval)/1000.0);
 }
 
--(void)stopAutorefreshMrec
+-(void)stopAutorefreshMrecWithAdUnitIdentifier:(NSString*)adUnitId
 {
-    if (mrecId)
-    {
-        Bidapp_setBannerRefreshInterval_platform(mrecId.UTF8String, 0.0);
-    }
+    Bidapp_setBannerRefreshInterval_platform(adUnitId.UTF8String, 0.0);
 }
 
 -(void)createInterstitialWithAdUnitIdentifier:(NSString*)adUnitId
@@ -290,6 +243,11 @@ typedef BOOL(^adapter_filter_t)(int networkAdapterId);
     Bidapp_loadInterstitial_platform(adUnitId.UTF8String);
 }
 
+-(void)destroyInterstitialWithAdUnitIdentifier:(NSString*)adUnitId
+{
+    Bidapp_destroyInterstitial_platform(adUnitId.UTF8String);
+}
+
 -(void)createRewardedWithAdUnitIdentifier:(NSString*)adUnitId
 {
     Bidapp_createRewarded_platform(adUnitId.UTF8String,false);
@@ -298,6 +256,11 @@ typedef BOOL(^adapter_filter_t)(int networkAdapterId);
 -(void)loadRewardedWithAdUnitIdentifier:(NSString*)adUnitId
 {
     Bidapp_loadRewarded_platform(adUnitId.UTF8String);
+}
+
+-(void)destroyRewardedWithAdUnitIdentifier:(NSString*)adUnitId
+{
+    Bidapp_destroyRewarded_platform(adUnitId.UTF8String);
 }
 
 -(void)initialize:(NSString*)pluginVersion pubIdValue:(NSString*)pubIdValue
@@ -314,19 +277,19 @@ typedef BOOL(^adapter_filter_t)(int networkAdapterId);
     }
 }
 
--(void)setHasUserConsent:(BOOL)consentGiven
+-(void)setGDPR:(BOOL)consentGiven
 {
     Bidapp_setGDPRConsent_platform(consentGiven);
 }
 
--(void)setIsAgeRestrictedUser:(BOOL)ageRestricted
+-(void)setCOPPA:(BOOL)ageRestricted
 {
     Bidapp_setSubjectToCOPPA_platform(ageRestricted);
 }
 
--(void)setDoNotSell:(BOOL)doNotSell
+-(void)setCCPA:(BOOL)consentGiven
 {
-    Bidapp_setCCPAConsent_platform(!doNotSell);
+    Bidapp_setCCPAConsent_platform(consentGiven);
 }
 
 -(void)setVerboseLoggingEnabled:(BOOL)enabled
@@ -644,7 +607,7 @@ void UBidapp::SetCOPPA(bool bCOPPA)
 void UBidapp::SetCCPA(bool bCCPA)
 {
 #if PLATFORM_IOS
-    [GetIOSPlugin() SetCCPA:bCCPA];
+    [GetIOSPlugin() setCCPA:bCCPA];
 #elif PLATFORM_ANDROID
     GetAndroidPlugin()->SetCCPA(bCCPA);
 #endif
@@ -719,7 +682,7 @@ void UBidapp::CreateBanner(const FString &AdUnitIdentifier, BBannerVerticalPosit
 const FString BannerVerticalString = GetBannerVerticalString(BannerVerticalPosition);
 const FString BannerHorizontalString = GetBannerHorizontalString(BannerHorizontalPosition);
 #if PLATFORM_IOS
-    [GetIOSPlugin() createBannerWithPositionH:BannerHorizontalString.GetNSString() V:BannerVerticalString.GetNSString()];
+    [GetIOSPlugin() createBannerWithAdUnitIdentifier:AdUnitIdentifier.GetNSString() H:BannerHorizontalString.GetNSString() V:BannerVerticalString.GetNSString()];
 #elif PLATFORM_ANDROID
     GetAndroidPlugin()->CreateBanner(AdUnitIdentifier, BannerVerticalString, BannerHorizontalString);
 #endif
@@ -728,7 +691,7 @@ const FString BannerHorizontalString = GetBannerHorizontalString(BannerHorizonta
 void UBidapp::ShowBanner(const FString &AdUnitIdentifier)
 {
 #if PLATFORM_IOS
-    [GetIOSPlugin() showBanner];
+    [GetIOSPlugin() showBannerWithAdUnitIdentifier:AdUnitIdentifier.GetNSString()];
 #elif PLATFORM_ANDROID
     GetAndroidPlugin()->ShowBanner(AdUnitIdentifier);
 #endif
@@ -737,7 +700,7 @@ void UBidapp::ShowBanner(const FString &AdUnitIdentifier)
 void UBidapp::HideBanner(const FString &AdUnitIdentifier)
 {
 #if PLATFORM_IOS
-    [GetIOSPlugin() hideBanner];
+    [GetIOSPlugin() hideBannerWithAdUnitIdentifier:AdUnitIdentifier.GetNSString()];
 #elif PLATFORM_ANDROID
     GetAndroidPlugin()->HideBanner(AdUnitIdentifier);
 #endif
@@ -746,7 +709,7 @@ void UBidapp::HideBanner(const FString &AdUnitIdentifier)
 void UBidapp::DestroyBanner(const FString &AdUnitIdentifier)
 {
 #if PLATFORM_IOS
-    [GetIOSPlugin() destroyBanner];
+    [GetIOSPlugin() destroyBannerWithAdUnitIdentifier:AdUnitIdentifier.GetNSString()];
 #elif PLATFORM_ANDROID
     GetAndroidPlugin()->DestroyBanner(AdUnitIdentifier);
 #endif
@@ -755,7 +718,7 @@ void UBidapp::DestroyBanner(const FString &AdUnitIdentifier)
 void UBidapp::StartAutorefreshBanner(const FString &AdUnitIdentifier, int32 interval)
 {
 #if PLATFORM_IOS
-    [GetIOSPlugin() startAutorefreshBanner:(int32_t)interval];
+    [GetIOSPlugin() startAutorefreshBanner:(int32_t)interval withAdUnitIdentifier:AdUnitIdentifier.GetNSString()];
 #elif PLATFORM_ANDROID
     GetAndroidPlugin()->StartAutorefreshBanner(AdUnitIdentifier, interval);
 #endif
@@ -764,7 +727,7 @@ void UBidapp::StartAutorefreshBanner(const FString &AdUnitIdentifier, int32 inte
 void UBidapp::StopAutorefreshBanner(const FString &AdUnitIdentifier)
 {
 #if PLATFORM_IOS
-    [GetIOSPlugin() stopAutorefreshBanner];
+    [GetIOSPlugin() stopAutorefreshBannerWithAdUnitIdentifier:AdUnitIdentifier.GetNSString()];
 #elif PLATFORM_ANDROID
     GetAndroidPlugin()->StopAutorefreshBanner(AdUnitIdentifier);
 #endif
@@ -777,7 +740,7 @@ void UBidapp::CreateMrec(const FString &AdUnitIdentifier, BBannerVerticalPositio
 const FString MRecVerticalString = GetBannerVerticalString(MrecVerticalPosition);
 const FString MRecHorizontalString = GetBannerHorizontalString(MrecHorizontalPosition);
 #if PLATFORM_IOS
-    [GetIOSPlugin() createMrecWithPositionH:MRecHorizontalString.GetNSString() V:MRecVerticalString.GetNSString()];
+    [GetIOSPlugin() createMrecWithAdUnitIdentifier:AdUnitIdentifier.GetNSString() H:MRecHorizontalString.GetNSString() V:MRecVerticalString.GetNSString()];
 #elif PLATFORM_ANDROID
     GetAndroidPlugin()->CreateMrec(AdUnitIdentifier, MRecVerticalString, MRecHorizontalString);
 #endif
@@ -786,7 +749,7 @@ const FString MRecHorizontalString = GetBannerHorizontalString(MrecHorizontalPos
 void UBidapp::ShowMrec(const FString &AdUnitIdentifier)
 {
 #if PLATFORM_IOS
-    [GetIOSPlugin() showMrec];
+    [GetIOSPlugin() showMrecWithAdUnitIdentifier:AdUnitIdentifier.GetNSString()];
 #elif PLATFORM_ANDROID
     GetAndroidPlugin()->ShowMrec(AdUnitIdentifier);
 #endif
@@ -795,7 +758,7 @@ void UBidapp::ShowMrec(const FString &AdUnitIdentifier)
 void UBidapp::HideMrec(const FString &AdUnitIdentifier)
 {
 #if PLATFORM_IOS
-    [GetIOSPlugin() hideMrec];
+    [GetIOSPlugin() hideMrecWithAdUnitIdentifier:AdUnitIdentifier.GetNSString()];
 #elif PLATFORM_ANDROID
     GetAndroidPlugin()->HideBanner(AdUnitIdentifier);
 #endif
@@ -804,7 +767,7 @@ void UBidapp::HideMrec(const FString &AdUnitIdentifier)
 void UBidapp::DestroyMrec(const FString &AdUnitIdentifier)
 {
 #if PLATFORM_IOS
-    [GetIOSPlugin() destroyMrec];
+    [GetIOSPlugin() destroyMrecWithAdUnitIdentifier:AdUnitIdentifier.GetNSString()];
 #elif PLATFORM_ANDROID
     GetAndroidPlugin()->DestroyMrec(AdUnitIdentifier);
 #endif
@@ -813,7 +776,7 @@ void UBidapp::DestroyMrec(const FString &AdUnitIdentifier)
 void UBidapp::StartAutorefreshMrec(const FString &AdUnitIdentifier, int32 interval)
 {
 #if PLATFORM_IOS
-    [GetIOSPlugin() startAutorefreshMrec:(int32_t)interval];
+    [GetIOSPlugin() startAutorefreshMrec:(int32_t)interval withAdUnitIdentifier:AdUnitIdentifier.GetNSString()];
 #elif PLATFORM_ANDROID
     GetAndroidPlugin()->StartAutorefreshMrec(AdUnitIdentifier, interval);
 #endif
@@ -822,7 +785,7 @@ void UBidapp::StartAutorefreshMrec(const FString &AdUnitIdentifier, int32 interv
 void UBidapp::StopAutorefreshMrec(const FString &AdUnitIdentifier)
 {
 #if PLATFORM_IOS
-    [GetIOSPlugin() stopAutorefreshMrec];
+    [GetIOSPlugin() stopAutorefreshMrecWithAdUnitIdentifier:AdUnitIdentifier.GetNSString()];
 #elif PLATFORM_ANDROID
     GetAndroidPlugin()->StopAutorefreshMrec(AdUnitIdentifier);
 #endif
@@ -834,7 +797,7 @@ void UBidapp::StopAutorefreshMrec(const FString &AdUnitIdentifier)
 void UBidapp::CreateInterstitial(const FString &AdUnitIdentifier, bool autoCaching)
 {
 #if PLATFORM_IOS
-    [GetIOSPlugin() createInterstitialWithAdUnitIdentifier:@"111"];
+    [GetIOSPlugin() createInterstitialWithAdUnitIdentifier:AdUnitIdentifier.GetNSString()];
 #elif PLATFORM_ANDROID
     GetAndroidPlugin()->CreateInterstitial(AdUnitIdentifier, autoCaching);
 #endif
@@ -843,7 +806,7 @@ void UBidapp::CreateInterstitial(const FString &AdUnitIdentifier, bool autoCachi
 void UBidapp::LoadInterstitial(const FString &AdUnitIdentifier)
 {
 #if PLATFORM_IOS
-    [GetIOSPlugin() loadInterstitialWithAdUnitIdentifier:@"111"];
+    [GetIOSPlugin() loadInterstitialWithAdUnitIdentifier:AdUnitIdentifier.GetNSString()];
 #elif PLATFORM_ANDROID
     GetAndroidPlugin()->LoadInterstitial(AdUnitIdentifier);
 #endif
@@ -852,7 +815,7 @@ void UBidapp::LoadInterstitial(const FString &AdUnitIdentifier)
 bool UBidapp::IsInterstitialReady(const FString &AdUnitIdentifier)
 {
 #if PLATFORM_IOS
-    return [GetIOSPlugin() isInterstitialReadyWithAdUnitIdentifier:@"111"];
+    return [GetIOSPlugin() isInterstitialReadyWithAdUnitIdentifier:AdUnitIdentifier.GetNSString()];
 #elif PLATFORM_ANDROID
     return GetAndroidPlugin()->IsInterstitialReady(AdUnitIdentifier);
 #else
@@ -864,7 +827,7 @@ bool UBidapp::IsInterstitialReady(const FString &AdUnitIdentifier)
 void UBidapp::ShowInterstitial(const FString &AdUnitIdentifier)
 {
 #if PLATFORM_IOS
-    [GetIOSPlugin() showInterstitialWithAdUnitIdentifier:@"111"];
+    [GetIOSPlugin() showInterstitialWithAdUnitIdentifier:AdUnitIdentifier.GetNSString()];
 #elif PLATFORM_ANDROID
     GetAndroidPlugin()->ShowInterstitial(AdUnitIdentifier);
 #endif
@@ -873,7 +836,7 @@ void UBidapp::ShowInterstitial(const FString &AdUnitIdentifier)
 void UBidapp::DestroyInterstitial(const FString &AdUnitIdentifier)
 {
 #if PLATFORM_IOS
-    [GetIOSPlugin() DestroyInterstitialWithAdUnitIdentifier:@"111"];
+    [GetIOSPlugin() destroyInterstitialWithAdUnitIdentifier:AdUnitIdentifier.GetNSString()];
 #elif PLATFORM_ANDROID
     GetAndroidPlugin()->DestroyInterstitial(AdUnitIdentifier);
 #endif
@@ -882,7 +845,7 @@ void UBidapp::DestroyInterstitial(const FString &AdUnitIdentifier)
 void UBidapp::CreateRewarded(const FString &AdUnitIdentifier, bool autoCaching)
 {
 #if PLATFORM_IOS
-    [GetIOSPlugin() createRewardedWithAdUnitIdentifier:@"888"];
+    [GetIOSPlugin() createRewardedWithAdUnitIdentifier:AdUnitIdentifier.GetNSString()];
 #elif PLATFORM_ANDROID
      GetAndroidPlugin()->CreateRewarded(AdUnitIdentifier, autoCaching);
 #endif
@@ -891,7 +854,7 @@ void UBidapp::CreateRewarded(const FString &AdUnitIdentifier, bool autoCaching)
 void UBidapp::LoadRewarded(const FString &AdUnitIdentifier)
 {
 #if PLATFORM_IOS
-    [GetIOSPlugin() loadRewardedWithAdUnitIdentifier:@"888"];
+    [GetIOSPlugin() loadRewardedWithAdUnitIdentifier:AdUnitIdentifier.GetNSString()];
 #elif PLATFORM_ANDROID
     GetAndroidPlugin()->LoadRewarded(AdUnitIdentifier);
 #endif
@@ -900,7 +863,7 @@ void UBidapp::LoadRewarded(const FString &AdUnitIdentifier)
 bool UBidapp::IsRewardedReady(const FString &AdUnitIdentifier)
 {
 #if PLATFORM_IOS
-    return [GetIOSPlugin() isRewardedAdReadyWithAdUnitIdentifier:@"888"];
+    return [GetIOSPlugin() isRewardedAdReadyWithAdUnitIdentifier:AdUnitIdentifier.GetNSString()];
 #elif PLATFORM_ANDROID
     return GetAndroidPlugin()->IsRewardedReady(AdUnitIdentifier);
 #else
@@ -913,7 +876,7 @@ bool UBidapp::IsRewardedReady(const FString &AdUnitIdentifier)
 void UBidapp::ShowRewarded(const FString &AdUnitIdentifier)
 {
 #if PLATFORM_IOS
-    [GetIOSPlugin() showRewardedAdWithAdUnitIdentifier:@"888"];
+    [GetIOSPlugin() showRewardedAdWithAdUnitIdentifier:AdUnitIdentifier.GetNSString()];
 #elif PLATFORM_ANDROID
     GetAndroidPlugin()->ShowRewarded(AdUnitIdentifier);
 #endif
@@ -922,7 +885,7 @@ void UBidapp::ShowRewarded(const FString &AdUnitIdentifier)
 void UBidapp::DestroyRewarded(const FString &AdUnitIdentifier)
 {
 #if PLATFORM_IOS
-    [GetIOSPlugin() DestroyRewardedAdWithAdUnitIdentifier:@"888"];
+    [GetIOSPlugin() destroyRewardedWithAdUnitIdentifier:AdUnitIdentifier.GetNSString()];
 #elif PLATFORM_ANDROID
     GetAndroidPlugin()->DestroyRewarded(AdUnitIdentifier);
 #endif

@@ -19,7 +19,8 @@
 			"Name": "Bidapp",
 			"Type": "Runtime",
 			"LoadingPhase": "Default",
-			"PlatformAllowList": [				
+			"PlatformAllowList": [
+            "IOS",				
             "Android",
             "Win64",
             "Mac"
