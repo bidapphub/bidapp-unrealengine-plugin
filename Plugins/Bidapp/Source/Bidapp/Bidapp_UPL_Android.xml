@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--Bidapp Ads - Plugin for Unreal Engine
+	Copyright (C) 2024 BIDAPP <support@bidapp.io>
+			All Rights Reserved.-->
+
+<root xmlns:android="http://schemas.android.com/apk/res/android"
+ xmlns:tools="http://schemas.android.com/tools">
+  <!-- init section is always evaluated once per architecture -->
+  <init>
+    <log text="Bidapp Android SDK init"/>
+
+    <!-- check if using Gradle -->
+    <setBoolFromProperty result="bGradle" ini="Engine" section="/Script/AndroidRuntimeSettings.AndroidRuntimeSettings" property="bEnableGradle" default="false"/>
+    <if condition="bGradle">
+      <false>
+        <log text="Bidapp Android SDK requires Gradle"/>
+      </false>
+    </if>
+
+    <!-- get packaging for Applovin from ini and reset it if architecture not supported -->
+    <setBoolFromProperty result="bEnabled" ini="Engine" section="Bidapp" property="bEnabled" default="true"/>
+    <setStringFromProperty result="ClientId" ini="Engine" section="Bidapp" property="ClientId" default="0"/>
+
+    <dumpvars/>
+  </init>
+
+  <!-- optional updates applied to AndroidManifest.xml -->
+  <androidManifestUpdates>
+    <if condition="bEnabled">
+      <true>
+   <addPermission android:name="android.permission.INTERNET" />
+   <addPermission android:name="android.permission.ACCESS_NETWORK_STATE" />
+   </true>
+    </if>
+  </androidManifestUpdates>
+
+  <!-- optional additions to proguard -->
+  <proguardAdditions>
+    <if condition="bEnabled">
+      <true>
+        <insert>
+          -keep public class com.epicgames.unreal.GameActivity$BidappUnrealPluginListener { *; }
+        </insert>
+      </true>
+    </if>
+  </proguardAdditions>
+
+  <!-- optional AAR imports additions -->
+  <AARImports>
+    <if condition="bEnabled">
+      <true>
+        <insertValue value="io.bidapp,sdk,1.1.0" />
+        <insertNewline/>
+        <insertValue value="org.jetbrains.kotlin,kotlin-stdlib,1.9.21" />
+        <insertNewline/>
+        <insertValue value="org.jetbrains.kotlinx,kotlinx-coroutines-android,1.7.3" />
+        <insertNewline/>
+      <insertValue value="io.bidapp.networks,unity,1.1.0" />
+      <insertNewline/>
+<insertValue value="repository $S(PluginDir)/../ThirdParty/Android/repository" />
+        <insertNewline/>
+        <insertValue value="io.bidapp,bidapp-unreal-plugin,release" />
+        <insertNewline/>
+      </true>
+    </if>
+  </AARImports>
+
+  <!-- optional app build.gradle additions -->
+  <buildGradleAdditions>
+    <if condition="bEnabled">
+      <true>
+        <insert>
+          android {
+              compileOptions {
+                  sourceCompatibility = JavaVersion.VERSION_1_8
+                  targetCompatibility = JavaVersion.VERSION_1_8
+              }
+          }
+
+          allprojects {
+            repositories {
+            maven {
+            url "https://cboost.jfrog.io/artifactory/chartboost-ads/"
+             }
+             }
+          }
+         
+          // Prefer newer versions of Play Services, particularly for below UE 5.2
+          dependencies {
+      implementation("com.google.android.gms:play-services-auth").version {
+              strictly("[21,23[")
+              prefer("21.0.0")
+            }
+            implementation("com.google.android.gms:play-services-nearby").version {
+              strictly("[19,21[")
+              prefer("19.0.0")
+            }
+            implementation("com.google.android.gms:play-services-plus").version {
+              strictly("[17,19[")
+              prefer("17.0.0")
+            }
+          }
+        </insert>
+      </true>
+    </if>
+  </buildGradleAdditions>
+
+  <!--optional properties to add to gradle.properties -->
+  <gradleProperties>
+    <if condition="bEnabled">
+      <true>
+        <insert>
+          android.useAndroidX=true
+        </insert>
+      </true>
+    </if>
+  </gradleProperties>
+
+  <!--optional additions to the GameActivity imports in GameActivity.java -->
+  <gameActivityImportAdditions>
+    <if condition="bEnabled">
+      <true>
+        <insert>
+          import io.bidapp.unreal.BidappUnrealPlugin;
+        </insert>
+      </true>
+    </if>
+  </gameActivityImportAdditions>
+
+  <!--optional additions to the GameActivity class body in GameActivity.java -->
+  <gameActivityClassAdditions>
+    <if condition="bEnabled">
+      <true>
+        <insert>
+        // Begin Bidapp gameActivityClassAdditions
+        public static class BidappUnrealPluginListener implements BidappUnrealPlugin.EventListener
+        {
+          public native void forwardEvent(String name, String params);
+
+          public BidappUnrealPluginListener() {}
+
+          @Override
+          public void onReceivedEvent(String name, String params)
+          {
+            forwardEvent(name, params);
+          }
+        }
+        // End Bidapp gameActivityClassAdditions
+        </insert>
+      </true>
+    </if>
+  </gameActivityClassAdditions>
+</root>

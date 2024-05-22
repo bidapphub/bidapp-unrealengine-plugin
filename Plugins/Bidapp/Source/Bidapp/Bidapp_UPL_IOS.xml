@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--Bidapp Ads - Plugin for Unreal Engine
+		Copyright (C) 2024 BIDAPP <support@bidapp.io>
+				All Rights Reserved.-->
+
+<root>
+  <init>
+    <log text="Bidapp IOS SDK init"/>
+  </init>
+
+  <iosPListUpdates>
+    <addElements tag="dict" once="true">
+      <!-- Add any updates to Info.plist here -->
+    </addElements>
+  </iosPListUpdates>
+</root>

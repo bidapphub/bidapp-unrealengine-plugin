@@ -1,0 +1,38 @@
+{
+	"FileVersion": 3,
+	"Version": 1000100,
+	"VersionName": "1.0.2",
+	"FriendlyName": "Bidapp",
+	"Description": "Bidapp Unreal Engine Plugin for Android and iOS",
+	"Category": "Advertising",
+	"CreatedBy": "Bidapp",
+	"CreatedByURL": "https://bidapp.io",
+	"DocsURL": "https://docs.bidapp.io",
+	"MarketplaceURL":  "com.epicgames.launcher://ue/marketplace/product/477abc1304a146e2bcd0547cd984e79b",
+	"SupportURL": "https://github.com/bidapphub/bidapp-unrealengine-plugin/issues",
+	"EngineVersion": "5.4.0",
+	"CanContainContent": false,
+	"Installed": true,
+	"Modules": [
+		{
+			"Name": "Bidapp",
+			"Type": "Runtime",
+			"LoadingPhase": "Default",
+			"PlatformAllowList": [
+				"IOS",
+				"Android",
+				"Win64",
+				"Mac"
+			]
+		},
+		{
+			"Name": "BidappSettings",
+			"Type": "Editor",
+			"LoadingPhase": "Default",
+			"PlatformAllowList": [
+				"Win64",
+				"Mac"
+			]
+		}
+	]
+}
