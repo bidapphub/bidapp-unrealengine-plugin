@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<!--Bidapp Ads - Plugin for Unreal Engine
-	Copyright (C) 2024 BIDAPP <support@bidapp.io>
-			All Rights Reserved.-->
-
+<!--Bidapp plugin additions-->
 <root xmlns:android="http://schemas.android.com/apk/res/android"
  xmlns:tools="http://schemas.android.com/tools">
   <!-- init section is always evaluated once per architecture -->
@@ -18,8 +14,7 @@
       </false>
     </if>
 
-    <!-- get packaging for Applovin from ini and reset it if architecture not supported -->
-    <setBoolFromProperty result="bEnabled" ini="Engine" section="Bidapp" property="bEnabled" default="true"/>
+     <setBoolFromProperty result="bEnabled" ini="Engine" section="Bidapp" property="bEnabled" default="true"/>
     <setStringFromProperty result="ClientId" ini="Engine" section="Bidapp" property="ClientId" default="0"/>
 
     <dumpvars/>
@@ -30,7 +25,13 @@
     <if condition="bEnabled">
       <true>
    <addPermission android:name="android.permission.INTERNET" />
-   <addPermission android:name="android.permission.ACCESS_NETWORK_STATE" />
+   <addPermission android:name="android.permission.ACCESS_NETWORK_STATE" />  
+  <setElement result="Bidapp" value="meta-data"/>
+  <!-- start meta data -->
+<addAttribute tag="$Bidapp" name="android:name" value="com.google.android.gms.ads.APPLICATION_ID"/>
+<addAttribute tag="$Bidapp" name="android:value" value="ca-app-pub-3940256099942544~3347511713"/>
+  <!-- stop meta data -->  
+	<addElement tag="application" name="Bidapp"/>  
    </true>
     </if>
   </androidManifestUpdates>
@@ -56,12 +57,10 @@
         <insertNewline/>
         <insertValue value="org.jetbrains.kotlinx,kotlinx-coroutines-android,1.7.3" />
         <insertNewline/>
-      <insertValue value="io.bidapp.networks,unity,1.1.0" />
-      <insertNewline/>
-<insertValue value="repository $S(PluginDir)/../ThirdParty/Android/repository" />
+        <insertValue value="repository $S(PluginDir)/../ThirdParty/Android/repository" />
         <insertNewline/>
         <insertValue value="io.bidapp,bidapp-unreal-plugin,release" />
-        <insertNewline/>
+        <insertNewline/>   
       </true>
     </if>
   </AARImports>
@@ -86,9 +85,24 @@
              }
           }
          
-          // Prefer newer versions of Play Services, particularly for below UE 5.2
-          dependencies {
-      implementation("com.google.android.gms:play-services-auth").version {
+          // Prefer newer versions of Play Services, particularly for below UE 5.4
+        dependencies {
+        <!-- Start Dynamic imports -->
+        implementation('io.bidapp.networks:liftoff:1.1.0')
+        implementation('io.bidapp.networks:applovin:1.1.0')
+        implementation('io.bidapp.networks:applovinmax:1.1.0')
+        implementation('io.bidapp.networks:unity:1.1.0')
+        implementation('io.bidapp.networks:chartboost:1.1.0')
+        implementation('io.bidapp.networks:digitalturbine:1.1.0')
+        implementation('io.bidapp.networks:facebook:1.1.0')
+        implementation('io.bidapp.networks:yandex:1.1.0')
+        implementation('io.bidapp.networks:admob:1.1.0')
+       {
+           exclude group: 'com.google.android.gms', module: 'play-services-ads'
+       }
+        implementation('com.google.android.gms:play-services-ads:22.3.0')
+        <!-- Stop Dynamic imports -->      
+            implementation("com.google.android.gms:play-services-auth").version {
               strictly("[21,23[")
               prefer("21.0.0")
             }
@@ -101,6 +115,7 @@
               prefer("17.0.0")
             }
           }
+          
         </insert>
       </true>
     </if>

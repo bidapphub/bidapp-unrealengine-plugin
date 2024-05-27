@@ -37,8 +37,6 @@ typedef void(*event_forwarder_t)(NSString*,NSString*);
 -(void)startAutorefreshMrec:(int32_t)interval withAdUnitIdentifier:(NSString*)adUnitId;
 -(void)stopAutorefreshMrecWithAdUnitIdentifier:(NSString*)adUnitId;
 
-//Leaderboard
-
 -(void)createLeaderboardWithAdUnitIdentifier:(NSString*)adUnitId H:(NSString*)horizontalPosition V:(NSString*)verticalPosition;
 -(void)showLeaderboardWithAdUnitIdentifier:(NSString*)adUnitId;
 -(void)hideLeaderboardWithAdUnitIdentifier:(NSString*)adUnitId;
@@ -249,12 +247,10 @@ typedef BOOL(^adapter_filter_t)(int networkAdapterId);
     Bidapp_setBannerRefreshInterval_platform(adUnitId.UTF8String, 0.0);
 }
 
-//Leaderboard
-
 -(void)createLeaderboardWithAdUnitIdentifier:(NSString*)adUnitId H:(NSString*)horizontalPosition V:(NSString*)verticalPosition
 {
     NSString* position = [self adjustPositionH:horizontalPosition V:verticalPosition];
-    Bidapp_createBannerAtPosition_platform(adUnitId.UTF8String, position.UTF8String, "300x250");
+    Bidapp_createBannerAtPosition_platform(adUnitId.UTF8String, position.UTF8String, "728x90");
 }
 
 -(void)showLeaderboardWithAdUnitIdentifier:(NSString*)adUnitId
@@ -281,10 +277,6 @@ typedef BOOL(^adapter_filter_t)(int networkAdapterId);
 {
     Bidapp_setBannerRefreshInterval_platform(adUnitId.UTF8String, 0.0);
 }
-
-
-
-
 
 -(void)createInterstitialWithAdUnitIdentifier:(NSString*)adUnitId
 {
@@ -788,7 +780,7 @@ void UBidapp::CreateLeaderboard(const FString &AdUnitIdentifier, BBannerVertical
 const FString LeaderboardVerticalString = GetBannerVerticalString(LeaderboardVerticalPosition);
 const FString LeaderboardHorizontalString = GetBannerHorizontalString(LeaderboardHorizontalPosition);
 #if PLATFORM_IOS
-   // [GetIOSPlugin() createLeaderboardWithAdUnitIdentifier:AdUnitIdentifier.GetNSString() H:LeaderboardHorizontalString.GetNSString() V:LeaderboardVerticalString.GetNSString()];
+    [GetIOSPlugin() createLeaderboardWithAdUnitIdentifier:AdUnitIdentifier.GetNSString() H:LeaderboardHorizontalString.GetNSString() V:LeaderboardVerticalString.GetNSString()];
 #elif PLATFORM_ANDROID
     GetAndroidPlugin()->CreateLeaderboard(AdUnitIdentifier, LeaderboardVerticalString, LeaderboardHorizontalString);
 #endif
@@ -797,7 +789,7 @@ const FString LeaderboardHorizontalString = GetBannerHorizontalString(Leaderboar
 void UBidapp::ShowLeaderboard(const FString &AdUnitIdentifier)
 {
 #if PLATFORM_IOS
-  //  [GetIOSPlugin() showLeaderboardWithAdUnitIdentifier:AdUnitIdentifier.GetNSString()];
+    [GetIOSPlugin() showLeaderboardWithAdUnitIdentifier:AdUnitIdentifier.GetNSString()];
 #elif PLATFORM_ANDROID
     GetAndroidPlugin()->ShowLeaderboard(AdUnitIdentifier);
 #endif
@@ -806,7 +798,7 @@ void UBidapp::ShowLeaderboard(const FString &AdUnitIdentifier)
 void UBidapp::HideLeaderboard(const FString &AdUnitIdentifier)
 {
 #if PLATFORM_IOS
-   // [GetIOSPlugin() hideLeaderboardWithAdUnitIdentifier:AdUnitIdentifier.GetNSString()];
+    [GetIOSPlugin() hideLeaderboardWithAdUnitIdentifier:AdUnitIdentifier.GetNSString()];
 #elif PLATFORM_ANDROID
     GetAndroidPlugin()->HideLeaderboard(AdUnitIdentifier);
 #endif
@@ -815,7 +807,7 @@ void UBidapp::HideLeaderboard(const FString &AdUnitIdentifier)
 void UBidapp::DestroyLeaderboard(const FString &AdUnitIdentifier)
 {
 #if PLATFORM_IOS
-   // [GetIOSPlugin() destroyLeaderboardWithAdUnitIdentifier:AdUnitIdentifier.GetNSString()];
+    [GetIOSPlugin() destroyLeaderboardWithAdUnitIdentifier:AdUnitIdentifier.GetNSString()];
 #elif PLATFORM_ANDROID
     GetAndroidPlugin()->DestroyLeaderboard(AdUnitIdentifier);
 #endif
@@ -824,7 +816,7 @@ void UBidapp::DestroyLeaderboard(const FString &AdUnitIdentifier)
 void UBidapp::StartAutorefreshLeaderboard(const FString &AdUnitIdentifier, int32 interval)
 {
 #if PLATFORM_IOS
-   // [GetIOSPlugin() startAutorefreshLeaderboard:(int32_t)interval withAdUnitIdentifier:AdUnitIdentifier.GetNSString()];
+    [GetIOSPlugin() startAutorefreshLeaderboard:interval withAdUnitIdentifier:AdUnitIdentifier.GetNSString()];
 #elif PLATFORM_ANDROID
     GetAndroidPlugin()->StartAutorefreshLeaderboard(AdUnitIdentifier, interval);
 #endif
@@ -833,7 +825,7 @@ void UBidapp::StartAutorefreshLeaderboard(const FString &AdUnitIdentifier, int32
 void UBidapp::StopAutorefreshLeaderboard(const FString &AdUnitIdentifier)
 {
 #if PLATFORM_IOS
-   // [GetIOSPlugin() stopAutorefreshLeaderboardWithAdUnitIdentifier:AdUnitIdentifier.GetNSString()];
+    [GetIOSPlugin() stopAutorefreshLeaderboardWithAdUnitIdentifier:AdUnitIdentifier.GetNSString()];
 #elif PLATFORM_ANDROID
     GetAndroidPlugin()->StopAutorefreshLeaderboard(AdUnitIdentifier);
 #endif

@@ -169,36 +169,94 @@ NSString* identifierForBanner(BIDBannerView *adView)
     return @"";
 }
 
-+ (void)adView:(BIDBannerView *)adView didDisplayAd:(BIDAdInfo *)adInfo
++ (void)bannerDidDisplay:(BIDBannerView *)adView adInfo:(BIDAdInfo *)adInfo
 {
     NSString* idt = identifierForBanner(adView);
     
-    NSString* message = adView.bounds.size.height == 50.0 ? BIDAPP_onBannerDidDisplayAd : [BIDAPP_onBannerDidDisplayAd stringByReplacingOccurrencesOfString:@"Banner" withString:@"Mrec"];
+    NSString* message = BIDAPP_onBannerDidDisplayAd;
+    if (adView.bounds.size.height == 50.0)
+    {
+    }
+    else if (adView.bounds.size.height == 250.0)
+    {
+        message = [message stringByReplacingOccurrencesOfString:@"Banner" withString:@"Mrec"];
+    }
+    else if (adView.bounds.size.height == 90.0)
+    {
+        message = [message stringByReplacingOccurrencesOfString:@"Banner" withString:@"Leaderboard"];
+    }
+    else
+    {
+        return;
+    }
     
     UnrealSendMessage_bidapp(message, idt, adInfo, nil);
 }
 
-+ (void)adView:(BIDBannerView *)adView didFailToDisplayAd:(BIDAdInfo *)adInfo error:(NSError *)error
++ (void)bannerDidFailToDisplay:(BIDBannerView *)adView adInfo:(BIDAdInfo *)adInfo error:(NSError *)error
 {
     NSString* errorDescription_ = error.localizedDescription ? error.localizedDescription : @"Unknown error";
-    
-    NSString* message = adView.bounds.size.height == 50.0 ? BIDAPP_onBannerFailedToDisplayAd : [BIDAPP_onBannerFailedToDisplayAd stringByReplacingOccurrencesOfString:@"Banner" withString:@"Mrec"];
+    NSString* message = BIDAPP_onBannerFailedToDisplayAd;
+    if (adView.bounds.size.height == 50.0)
+    {
+    }
+    else if (adView.bounds.size.height == 250.0)
+    {
+        message = [message stringByReplacingOccurrencesOfString:@"Banner" withString:@"Mrec"];
+    }
+    else if (adView.bounds.size.height == 90.0)
+    {
+        message = [message stringByReplacingOccurrencesOfString:@"Banner" withString:@"Leaderboard"];
+    }
+    else
+    {
+        return;
+    }
     
     UnrealSendMessage_bidapp(message, identifierForBanner(adView), adInfo, errorDescription_);
 }
 
-+ (void)adView:(BIDBannerView *)adView didClicked:(BIDAdInfo *)adInfo
++ (void)bannerDidClick:(BIDBannerView *)adView adInfo:(BIDAdInfo *)adInfo
 {
-    NSString* message = adView.bounds.size.height == 50.0 ? BIDAPP_onBannerClicked : [BIDAPP_onBannerClicked stringByReplacingOccurrencesOfString:@"Banner" withString:@"Mrec"];
+    NSString* message = BIDAPP_onBannerClicked;
+    if (adView.bounds.size.height == 50.0)
+    {
+    }
+    else if (adView.bounds.size.height == 250.0)
+    {
+        message = [message stringByReplacingOccurrencesOfString:@"Banner" withString:@"Mrec"];
+    }
+    else if (adView.bounds.size.height == 90.0)
+    {
+        message = [message stringByReplacingOccurrencesOfString:@"Banner" withString:@"Leaderboard"];
+    }
+    else
+    {
+        return;
+    }
     
     UnrealSendMessage_bidapp(message, identifierForBanner(adView), adInfo, nil);
 }
 
-+ (void)allNetworksFailedToDisplayAdInAdView:(BIDBannerView *)adView
++ (void)allNetworksFailedToDisplayAdInBanner:(BIDBannerView *)adView
 {
     NSString* errorDescription_ = @"All ad networks failed to display ad";
-    
-    NSString* message = adView.bounds.size.height == 50.0 ? BIDAPP_onBannerClicked : [BIDAPP_onBannerClicked stringByReplacingOccurrencesOfString:@"Banner" withString:@"Mrec"];
+    NSString* message = BIDAPP_onBannerAllNetworksFailedToDisplayAd;
+    if (adView.bounds.size.height == 50.0)
+    {
+    }
+    else if (adView.bounds.size.height == 250.0)
+    {
+        message = [message stringByReplacingOccurrencesOfString:@"Banner" withString:@"Mrec"];
+    }
+    else if (adView.bounds.size.height == 90.0)
+    {
+        message = [message stringByReplacingOccurrencesOfString:@"Banner" withString:@"Leaderboard"];
+    }
+    else
+    {
+        return;
+    }
     
     UnrealSendMessage_bidapp(message, identifierForBanner(adView), nil, errorDescription_);
 }
@@ -429,21 +487,6 @@ static BIDConfiguration* config()
 void Bidapp_start_platform_(NSString* pubid, NSString* formats, NSString* version)
 {
     pluginVersion_ = version;
-    
-    if ([formats rangeOfString:BIDAPP_INTERSTITIAL].location != NSNotFound)
-    {
-        [config() enableInterstitialAds];
-    }
-    
-    if ([formats rangeOfString:BIDAPP_REWARDED].location != NSNotFound)
-    {
-        [config() enableRewardedAds];
-    }
-    
-    if ([formats rangeOfString:BIDAPP_BANNER].location != NSNotFound)
-    {
-        [config() enableBannerAds];
-    }
 
     Bidapp_requestTrackingAuthorization_platform();
     
@@ -677,6 +720,9 @@ void Bidapp_showBannerX_platform_(NSString* idt, NSString* bannerSize, float x, 
     else if ([bannerSize isEqualToString:@"320x50"]){
         banner_view = [BIDBannerView bannerWithFormat:[BIDAdFormat banner_320x50] delegate:(id)[BidappSDKPluginName class]];
     }
+    else if ([bannerSize isEqualToString:@"728x90"]){
+        banner_view = [BIDBannerView bannerWithFormat:[BIDAdFormat banner_728x90] delegate:(id)[BidappSDKPluginName class]];
+    }
     else
     {
         return;
@@ -767,6 +813,9 @@ void Bidapp_createBannerAtPosition_platform_(NSString* idt, NSString* position, 
     }
     else if ([bannerSize isEqualToString:@"320x50"]){
         banner_view = [BIDBannerView bannerWithFormat:[BIDAdFormat banner_320x50] delegate:(id)[BidappSDKPluginName class]];
+    }
+    else if ([bannerSize isEqualToString:@"728x90"]){
+        banner_view = [BIDBannerView bannerWithFormat:[BIDAdFormat banner_728x90] delegate:(id)[BidappSDKPluginName class]];
     }
     else
     {
