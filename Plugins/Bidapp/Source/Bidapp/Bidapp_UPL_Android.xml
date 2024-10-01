@@ -51,7 +51,7 @@
   <AARImports>
     <if condition="bEnabled">
       <true>
-        <insertValue value="io.bidapp,sdk,1.1.0" />
+        <insertValue value="io.bidapp,sdk,2.1.0" />
         <insertNewline/>
         <insertValue value="org.jetbrains.kotlin,kotlin-stdlib,1.9.21" />
         <insertNewline/>
@@ -88,19 +88,19 @@
           // Prefer newer versions of Play Services, particularly for below UE 5.4
         dependencies {
         <!-- Start Dynamic imports -->
-        implementation('io.bidapp.networks:liftoff:1.1.0')
-        implementation('io.bidapp.networks:applovin:1.1.0')
-        implementation('io.bidapp.networks:applovinmax:1.1.0')
-        implementation('io.bidapp.networks:unity:1.1.0')
-        implementation('io.bidapp.networks:chartboost:1.1.0')
-        implementation('io.bidapp.networks:digitalturbine:1.1.0')
-        implementation('io.bidapp.networks:facebook:1.1.0')
-        implementation('io.bidapp.networks:yandex:1.1.0')
-        implementation('io.bidapp.networks:admob:1.1.0')
+        implementation('io.bidapp.networks:liftoff:2.1.0')
+        implementation('io.bidapp.networks:applovin:2.1.0')
+        implementation('io.bidapp.networks:applovinmax:2.1.0')
+        implementation('io.bidapp.networks:unity:2.1.0')
+        implementation('io.bidapp.networks:chartboost:2.1.0')
+        implementation('io.bidapp.networks:digitalturbine:2.1.0')
+        implementation('io.bidapp.networks:facebook:2.1.0')
+        implementation('io.bidapp.networks:yandex:2.1.0')
+        implementation('io.bidapp.networks:admob:2.1.0')
        {
            exclude group: 'com.google.android.gms', module: 'play-services-ads'
        }
-        implementation('com.google.android.gms:play-services-ads:22.3.0')
+        implementation('com.google.android.gms:play-services-ads:23.0.0')
         <!-- Stop Dynamic imports -->      
             implementation("com.google.android.gms:play-services-auth").version {
               strictly("[21,23[")

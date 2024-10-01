@@ -138,43 +138,43 @@ void FBidappSettings::SetupAARImports()
         FString ImplString = TEXT("<!-- Start Dynamic imports -->\n");
         if (BidappSettings->bLiftoff)
         {
-            ImplString += TEXT("        implementation('io.bidapp.networks:liftoff:1.1.0')\n");
+            ImplString += TEXT("        implementation('io.bidapp.networks:liftoff:2.1.0')\n");
         }
         if (BidappSettings->bApplovin)
         {
-            ImplString += TEXT("        implementation('io.bidapp.networks:applovin:1.1.0')\n");
+            ImplString += TEXT("        implementation('io.bidapp.networks:applovin:2.1.0')\n");
         }
         if (BidappSettings->bApplovinMax)
         {
-            ImplString += TEXT("        implementation('io.bidapp.networks:applovinmax:1.1.0')\n");
+            ImplString += TEXT("        implementation('io.bidapp.networks:applovinmax:2.1.0')\n");
         }
         if (BidappSettings->bUnity)
         {
-            ImplString += TEXT("        implementation('io.bidapp.networks:unity:1.1.0')\n");
+            ImplString += TEXT("        implementation('io.bidapp.networks:unity:2.1.0')\n");
         }
         if (BidappSettings->bChartboost)
         {
-            ImplString += TEXT("        implementation('io.bidapp.networks:chartboost:1.1.0')\n");
+            ImplString += TEXT("        implementation('io.bidapp.networks:chartboost:2.1.0')\n");
         }
         if (BidappSettings->bDigitalTurbine)
         {
-            ImplString += TEXT("        implementation('io.bidapp.networks:digitalturbine:1.1.0')\n");
+            ImplString += TEXT("        implementation('io.bidapp.networks:digitalturbine:2.1.0')\n");
         }
         if (BidappSettings->bFacebook)
         {
-            ImplString += TEXT("        implementation('io.bidapp.networks:facebook:1.1.0')\n");
+            ImplString += TEXT("        implementation('io.bidapp.networks:facebook:2.1.0')\n");
         }
         if (BidappSettings->bYandex)
         {
-            ImplString += TEXT("        implementation('io.bidapp.networks:yandex:1.1.0')\n");
+            ImplString += TEXT("        implementation('io.bidapp.networks:yandex:2.1.0')\n");
         }
         if (BidappSettings->bAdmob)
         {
-            ImplString += TEXT("        implementation('io.bidapp.networks:admob:1.1.0')\n"
+            ImplString += TEXT("        implementation('io.bidapp.networks:admob:2.1.0')\n"
                 "       {\n"
                 "           exclude group: 'com.google.android.gms', module: 'play-services-ads'\n"
                 "       }\n"
-                "        implementation('com.google.android.gms:play-services-ads:22.3.0')\n");
+                "        implementation('com.google.android.gms:play-services-ads:23.0.0')\n");
         }
 
         ImplString += TEXT("        <!-- Stop Dynamic imports -->");
